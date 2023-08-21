@@ -33,6 +33,7 @@ using System.Windows.Media.Converters;
 using System.Runtime.CompilerServices;
 
 using Microsoft.WindowsAPICodePack.Dialogs;
+using static System.Net.WebRequestMethods;
 
 namespace MiteneLoader
 {
@@ -41,8 +42,9 @@ namespace MiteneLoader
     /// </summary>
     public partial class MainWindow : Window
     {
+        // "https://mitene.us/f/bO6hd7QDdb4"
         DataTable miteneData;
-        string page_source = "https://mitene.us/f/bO6hd7QDdb4";
+        string Page_Source;
         int page_count = 1;
         string nowDownloadPath = "";
         readonly CountdownEvent condition = new CountdownEvent(1);
@@ -50,6 +52,7 @@ namespace MiteneLoader
         bool endofData = false;
         bool readStart = false;
         bool isMiteneDataPage = false;
+        bool isMiteneLoginPage = false;
 
         int DuplicateCount = 0;
         CoreWebView2DownloadOperation downloadOperation;
@@ -147,9 +150,15 @@ namespace MiteneLoader
             //    Debug.WriteLine(e.ParameterObjectAsJson);
             //};
 
+            try
+            {
+                MiteneWebView.Source = new Uri(Page_Source);
+            }
+            catch
+            {
 
-            string url = TxtSharedURL.Text;
-            MiteneWebView.Source = new Uri(url);
+            }
+
         }
 
 
@@ -158,12 +167,15 @@ namespace MiteneLoader
             TxtSharedURL.Text = Properties.Settings.Default.Shared_URL;
             TxtFolderPath.Text = Properties.Settings.Default.Storage_Folder;
             ChkYearMonthFolder.IsChecked = (Properties.Settings.Default.SubFolder_Type == 1);
+            Page_Source = TxtSharedURL.Text;
         }
 
         private void saveSetting()
         {
             Properties.Settings.Default.Shared_URL = TxtSharedURL.Text;
             Properties.Settings.Default.Storage_Folder = TxtFolderPath.Text;
+            Page_Source = TxtSharedURL.Text;
+
             if ((bool)ChkYearMonthFolder.IsChecked)
             {
                 Properties.Settings.Default.SubFolder_Type = 1;
@@ -256,7 +268,7 @@ namespace MiteneLoader
             Debug.Print($"MiteneWebView.CoreWebView2.DownloadStarting: {nameof(e.ResultFilePath)} = {e.ResultFilePath}");
             string download_path = e.ResultFilePath;
             string newpath = getSavePath(download_path);
-            if (!File.Exists(newpath))
+            if (!System.IO.File.Exists(newpath))
              
             {
                 var DownloadOperation = e.DownloadOperation;
@@ -527,7 +539,7 @@ namespace MiteneLoader
                     dr["thumbnailGenerated"] = data.thumbnailGenerated;
                     dr["expiringUrl"] = data.expiringUrl;
                     dr["expiringVideoUrl"] = data.expiringVideoUrl;
-                    dr["downloadUrl"] = this.page_source + "/media_files/" + data.uuid + "/download";
+                    dr["downloadUrl"] = this.Page_Source + "/media_files/" + data.uuid + "/download";
                     dr["fileExist"] = FileExistCheckPath(data.uuid, dr["tookAt"].ToString());
                     miteneData.Rows.Add(dr);
                     line_count++;
@@ -565,14 +577,15 @@ namespace MiteneLoader
         private void nextPage()
         {
             page_count++;
-            string nextPage = page_source + "?page=" + page_count;
+            string nextPage = Page_Source + "?page=" + page_count;
             MiteneWebView.CoreWebView2.Navigate(nextPage);
         }
 
         private void FirstPage()
         {
             page_count = 1;
-            string url = TxtSharedURL.Text;
+            string url = Page_Source;
+            ;
             MiteneWebView.Source = new Uri(url);
         }
 
@@ -705,7 +718,10 @@ namespace MiteneLoader
                 MiteneWebView.CoreWebView2.CloseDefaultDownloadDialog();
             }
 
-            MiteneWebView.CoreWebView2.Navigate(page_source);
+            MiteneWebView.CoreWebView2.Navigate(Page_Source);
+            string message = progressBar.Value + "/" + progressBar.Maximum + " ファイル処理完了";
+            MessageEx.ShowInformationDialog(message, Window.GetWindow(this));
+
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -716,26 +732,52 @@ namespace MiteneLoader
 
         private async void checkMitenePage()
         {
-            var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
+            string mitene_url = "https://mitene.us";
+            bool is_mitene_url = false;
 
-            string src = WebUtility.UrlDecode(html);
-            src = src.Replace("\\u003C", "<");
-            src = src.Replace("\\\"", "\"");
-
-            var pattern = @"""id"":\d{4,15},""uuid""";
-
-            bool result = Regex.IsMatch(src, pattern);
-            isMiteneDataPage = result;
-            if (result)
+            string url = MiteneWebView.Source.ToString();
+            if(url.Length >= mitene_url.Length)
             {
-                Menu_DoStart.Visibility = Visibility.Visible;
+                url = url.Substring(0, mitene_url.Length);
+                if (url.Equals(mitene_url, StringComparison.OrdinalIgnoreCase))
+                {
+                    is_mitene_url = true;
+                }
+            }
+
+            if (is_mitene_url)
+            {
+                var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
+
+                string src = WebUtility.UrlDecode(html);
+                src = src.Replace("\\u003C", "<");
+                src = src.Replace("\\\"", "\"");
+
+                var pattern = @"""id"":\d{4,15},""uuid""";
+
+                var login_pattern = "input type=\"password\" name=\"session\\[password\\]\" id=\"session_password\"";
+                isMiteneDataPage = Regex.IsMatch(src, pattern);
+                isMiteneLoginPage = Regex.IsMatch(src, login_pattern);
+
+
+                if (isMiteneDataPage)
+                {
+                    Menu_DoStart.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Menu_DoStart.Visibility = Visibility.Collapsed;
+                }
 
             }
             else
             {
+                isMiteneDataPage = false;
+                isMiteneLoginPage = false;
                 Menu_DoStart.Visibility = Visibility.Collapsed;
-
             }
+
+
         }
 
         private void Btn_Min_Click(object sender, RoutedEventArgs e)
@@ -766,11 +808,16 @@ namespace MiteneLoader
 
             if (isMiteneDataPage)
             {
-                MessageEx.ShowInformationDialog("みてねのデータページです。", Window.GetWindow(this));
+                MessageEx.ShowInformationDialog("みてねの共有URLデータページです。", Window.GetWindow(this));
+            }
+            else if(isMiteneLoginPage)
+            {
+
+                MessageEx.ShowInformationDialog("みてねの共有URLログインページです。", Window.GetWindow(this));
             }
             else
             {
-                MessageEx.ShowWarningDialog("みてねのデータページではりません。", Window.GetWindow(this));
+                MessageEx.ShowWarningDialog("みてねの共有URLページではりません。", Window.GetWindow(this));
             }
         }
 
@@ -801,13 +848,28 @@ namespace MiteneLoader
 
         private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
         {
-
             saveSetting();
 
             string dirPath = TxtFolderPath.Text;
             if (!Directory.Exists(dirPath))
             {
                 MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(Page_Source))
+            {
+                MessageEx.ShowWarningDialog("共有URLが設定されていません。\n共有URLを設定してください。", Window.GetWindow(this));
+                return;
+            }
+
+
+            MiteneWebView.Source = new Uri(Page_Source);
+
+            checkMitenePage();
+            if(!isMiteneDataPage && !isMiteneLoginPage)
+            {
+                MessageEx.ShowWarningDialog("みてねの共有URLではありません。\n正しい共有URLを設定してください。", Window.GetWindow(this));
                 return;
             }
             SettingPanel.Visibility = Visibility.Collapsed;
