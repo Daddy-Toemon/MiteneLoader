@@ -14,12 +14,16 @@
         <Image x:Key="ImageWinStateNormal" Source="Images/Nomal_Window.png" Width="12" Height="12"/>
     </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="11*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <!-- タイトルバーの UI の定義 -->
-        <Grid x:Name="Grid_Title" Grid.Row="0" Height="36">
+        <Grid x:Name="Grid_Title" Grid.Row="0" Height="36" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30"/>
                 <ColumnDefinition Width="124"/>
@@ -27,7 +31,7 @@
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
             <Image Source="Images/Logo.png" Width="24" Height="24" HorizontalAlignment="Left" Margin="8,0,4,0"/>
-            <Label x:Name="Title" Content="藤右衛門のみてね" VerticalAlignment="Center" Grid.Column="1" FontSize="16" FontWeight="Bold" FontFamily="HGSoeiKakupoptai"/>
+            <Label x:Name="Title" Content="みてねローダー" VerticalAlignment="Center" Grid.Column="1" FontSize="16" FontWeight="Bold" FontFamily="HGSoeiKakupoptai"/>
 
             <Grid Grid.Column="3" Margin="4,0,4,0">
                 <Grid.ColumnDefinitions>
@@ -67,8 +71,8 @@
                     <MenuItem.Icon>
                         <Image Source="Images/Settings.png"/>
                     </MenuItem.Icon>
-                    <MenuItem x:Name="Menu_Configration" Header="システム構成(_C)" />
-                    
+                    <MenuItem x:Name="Menu_Configration" Header="システム構成(_C)" Click="Menu_Configration_Click" />
+
                     <MenuItem Header="データを年・月フォルダーに分けて保存する" IsCheckable="True" IsChecked="True"/>
 
                     <MenuItem x:Name="Menu_Org" Header="テスト(_T)">
@@ -79,12 +83,8 @@
             </Menu>
 
         </Grid>
-        <Grid x:Name="Grid_Main" Grid.Row="1" Margin="4,0,4,4">
-            <DockPanel x:Name="MainPanel">
-                <DockPanel DockPanel.Dock="Top" Height="20">
-                    <TextBox Name="address_bar" UndoLimit="97">https://mitene.us/f/bO6hd7QDdb4</TextBox>
-                </DockPanel>
-
+        <Grid x:Name="Grid_Main" Grid.Row="1" Margin="4,0,4,4" Grid.ColumnSpan="2">
+            <DockPanel x:Name="MainPanel" Visibility="Collapsed">
                 <DockPanel x:Name="BottomPanel" LastChildFill="False" DockPanel.Dock="Bottom" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                     <Grid>
                         <ProgressBar x:Name="progressBar" Width="100" Height="41" Margin="5,5,0,5" Visibility="Collapsed" HorizontalAlignment="Stretch" />
@@ -94,9 +94,43 @@
                 <Wpf:WebView2 x:Name="MiteneWebView" Source="https://mitene.us/f/bO6hd7QDdb4" Margin="0,0,5,0" />
 
             </DockPanel>
+            <DockPanel x:Name="SettingPanel" Visibility="Visible">
+                <Grid Margin="15,5,15,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="設定項目" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+                    <Label Grid.Row="0" Grid.Column="2" Content="設定内容" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="共有URL" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <TextBox x:Name="TxtSharedURL" Grid.Row="1" Grid.Column="2" Text="https://mitene.us/f/bO6hd7QDdb4" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" Grid.ColumnSpan="2" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="保存フォルダー" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <TextBox x:Name="TxtFolderPath" Grid.Row="2" Grid.Column="2"  FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" />
+                    <Button x:Name="BtnFolder" Grid.Row="2" Grid.Column="3" Content="..." Height="30" Click="BtnFolder_Click"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="フォルダー構成" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <CheckBox x:Name="ChkYearMonthFolder" Grid.Row="3" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="年・月フォルダーに分ける" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <Button x:Name="BtnSettingSave" Grid.Row="4"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+
+                </Grid>
+            </DockPanel>
+
+
 
         </Grid>
-        
+
 
 
     </Grid>

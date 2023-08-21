@@ -11,5 +11,91 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="FlatButton" TargetType="Button" >
+        <!-- デフォルトのテーマを無効化 -->
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="4" Background="{TemplateBinding Background}">
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <!-- マウスオーバーした時に色を変える -->
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Background" Value="#CDD2D4"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Background" Value="DarkGray"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+
+        </Style.Triggers>
+    </Style>
+
+    <ControlTemplate x:Key="RoundButton"
+                         TargetType="Button">
+        <Border Name="border"
+                BorderThickness="0"
+                BorderBrush="DarkGray"
+                Cursor="Hand"
+                CornerRadius="6">
+            <ContentPresenter VerticalAlignment="Center"
+                                  HorizontalAlignment="Center" />
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="border"
+                            Property="Background"
+                            Value="RoyalBlue" />
+                <Setter Property="Foreground"
+                            Value="White" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="false">
+                <Setter TargetName="border"
+                            Property="Background"
+                            Value="DodgerBlue" />
+                <Setter Property="Foreground"
+                            Value="White" />
+            </Trigger>
+
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+
+    <ControlTemplate x:Key="LabelButton"
+                         TargetType="Button">
+        <Border Name="border"
+                BorderThickness="0"
+                BorderBrush="DarkGray"
+                Cursor="Hand"
+                CornerRadius="4">
+            <ContentPresenter VerticalAlignment="Center"
+                                  HorizontalAlignment="Center" />
+        </Border>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="border"
+                            Property="Background"
+                            Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+                <Setter Property="Foreground"
+                            Value="RoyalBlue" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="false">
+                <Setter TargetName="border"
+                            Property="Background"
+                            Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+                <Setter Property="Foreground"
+                            Value="DodgerBlue" />
+            </Trigger>
+
+
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 
 </ResourceDictionary>

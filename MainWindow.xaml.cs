@@ -32,6 +32,8 @@ using System.ComponentModel;
 using System.Windows.Media.Converters;
 using System.Runtime.CompilerServices;
 
+using Microsoft.WindowsAPICodePack.Dialogs;
+
 namespace MiteneLoader
 {
     /// <summary>
@@ -57,7 +59,7 @@ namespace MiteneLoader
             InitializeComponent();
 
 
-
+            loadSetting();
 
 
             InitAsync();
@@ -145,8 +147,34 @@ namespace MiteneLoader
             //    Debug.WriteLine(e.ParameterObjectAsJson);
             //};
 
-            string url = address_bar.Text;
+
+            string url = TxtSharedURL.Text;
             MiteneWebView.Source = new Uri(url);
+        }
+
+
+        private void loadSetting()
+        {
+            TxtSharedURL.Text = Properties.Settings.Default.Shared_URL;
+            TxtFolderPath.Text = Properties.Settings.Default.Storage_Folder;
+            ChkYearMonthFolder.IsChecked = (Properties.Settings.Default.SubFolder_Type == 1);
+        }
+
+        private void saveSetting()
+        {
+            Properties.Settings.Default.Shared_URL = TxtSharedURL.Text;
+            Properties.Settings.Default.Storage_Folder = TxtFolderPath.Text;
+            if ((bool)ChkYearMonthFolder.IsChecked)
+            {
+                Properties.Settings.Default.SubFolder_Type = 1;
+            }
+            else
+            {
+                Properties.Settings.Default.SubFolder_Type = 0;
+            }
+
+            Properties.Settings.Default.Save();
+
         }
 
         // MiteneWebView2
@@ -544,7 +572,7 @@ namespace MiteneLoader
         private void FirstPage()
         {
             page_count = 1;
-            string url = address_bar.Text;
+            string url = TxtSharedURL.Text;
             MiteneWebView.Source = new Uri(url);
         }
 
@@ -615,7 +643,8 @@ namespace MiteneLoader
 
         private string getFoldrPath()
         {
-            return @"C:\WorkSpace\Mitene";
+            //return @"C:\WorkSpace\Mitene";
+            return TxtFolderPath.Text;
         }
 
         private async void doDownload()
@@ -761,6 +790,54 @@ namespace MiteneLoader
             {
                 nextPage();
             }
+        }
+
+        private void Menu_Configration_Click(object sender, RoutedEventArgs e)
+        {
+            loadSetting();
+            MainPanel.Visibility = Visibility.Collapsed;
+            SettingPanel.Visibility = Visibility.Visible;
+        }
+
+        private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
+        {
+
+            saveSetting();
+
+            string dirPath = TxtFolderPath.Text;
+            if (!Directory.Exists(dirPath))
+            {
+                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
+                return;
+            }
+            SettingPanel.Visibility = Visibility.Collapsed;
+            MainPanel.Visibility = Visibility.Visible;
+
+        }
+
+        private void BtnFolder_Click(object sender, RoutedEventArgs e)
+        {
+
+            var cofd = new CommonOpenFileDialog();
+
+            cofd.Title = "フォルダを選択してください";
+            if (string.IsNullOrEmpty(TxtFolderPath.Text))
+            {
+                cofd.InitialDirectory = @"C:";
+            }
+            else
+            {
+                cofd.InitialDirectory = TxtFolderPath.Text;
+
+            }
+            cofd.IsFolderPicker = true;
+
+                if (cofd.ShowDialog() != CommonFileDialogResult.Ok)
+                {
+                    return;
+                }
+
+                TxtFolderPath.Text = cofd.FileName;
         }
     }
 
