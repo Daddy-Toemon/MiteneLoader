@@ -38,6 +38,7 @@ using static System.Net.WebRequestMethods;
 using Microsoft.WindowsAPICodePack.Controls;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
+using System.Drawing;
 
 namespace MiteneLoader
 {
@@ -48,15 +49,20 @@ namespace MiteneLoader
     {
         // "https://mitene.us/f/bO6hd7QDdb4"
         DataTable miteneData;
-        string Page_Source;
         int page_count = 1;
         string nowDownloadPath = "";
         readonly CountdownEvent condition = new CountdownEvent(1);
-        bool isDownload = false;
-        bool endofData = false;
-        bool readStart = false;
+
+        bool inDownloadProsess = false;
+        bool DataReadComplete = false;
+        bool inDataReadProsess = false;
+
         bool isMiteneDataPage = false;
         bool isMiteneLoginPage = false;
+
+        string Shared_URL;
+        string Storage_Folder;
+        bool useYearMonthFolder;
 
         int DuplicateCount = 0;
         CoreWebView2DownloadOperation downloadOperation;
@@ -64,13 +70,252 @@ namespace MiteneLoader
         public MainWindow()
         {
             InitializeComponent();
-
-
             loadSetting();
-
-
+            showBrank();
+            InitMiteneTable();
             InitAsync();
+            
+        }
 
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            PageLoading();
+        }
+
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            //
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+
+
+
+        private void loadSetting()
+        {
+            Shared_URL = Properties.Settings.Default.Shared_URL;
+            Storage_Folder = Properties.Settings.Default.Storage_Folder;
+            useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
+
+            TxtSharedURL.Text = Shared_URL;
+            TxtFolderPath.Text = Storage_Folder;
+            ChkYearMonthFolder.IsChecked = useYearMonthFolder;
+        }
+
+        private void saveSetting()
+        {
+            Properties.Settings.Default.Shared_URL = TxtSharedURL.Text;
+            Properties.Settings.Default.Storage_Folder = TxtFolderPath.Text;
+
+            if ((bool)ChkYearMonthFolder.IsChecked)
+            {
+                Properties.Settings.Default.SubFolder_Type = 1;
+            }
+            else
+            {
+                Properties.Settings.Default.SubFolder_Type = 0;
+            }
+
+            Properties.Settings.Default.Save();
+
+            Shared_URL = Properties.Settings.Default.Shared_URL;
+            Storage_Folder = Properties.Settings.Default.Storage_Folder;
+            useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
+        }
+
+        private void PageLoading()
+        {
+            bool isConfigRequired = false;
+            string mess = "";
+
+
+            if (string.IsNullOrEmpty(Shared_URL))
+            {
+                isConfigRequired = true;
+                mess = "\"共有URLが設定されていません。共有URLを設定してください。";
+            }
+            else
+            {
+                try
+                {
+                    MiteneWebView.Source = new Uri(Shared_URL);
+                }
+                catch
+                {
+                    isConfigRequired = true;
+                    mess = "指定URLが開けません。設定を確認してください。";
+                }
+
+            }
+
+            if (!Directory.Exists(Storage_Folder))
+            {
+                isConfigRequired = true;
+                if (mess.Length > 0) mess = mess + "\n";
+                mess= mess + "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
+                
+                Menu_FileBrowse.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                try
+                {
+                    FileBrowser.Navigate(ShellFileSystemFolder.FromFolderPath(Storage_Folder));  // フォルダーがないとエラー
+                    Menu_FileBrowse.Visibility= Visibility.Visible;
+                }
+                catch
+                {
+                    isConfigRequired = true;
+
+                    if (mess.Length > 0) mess = mess + "\n";
+
+                    mess = mess + "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
+                    Menu_FileBrowse.Visibility = Visibility.Collapsed;
+                }
+
+            }
+
+            if (isConfigRequired)
+            {
+                MessageEx.ShowWarningDialog(mess, Window.GetWindow(this));
+                showSetting();
+                return;
+            }
+            showWebBrowser();
+        }
+
+        private async void checkMitenePage()
+        {
+            string mitene_url = "https://mitene.us";
+            bool is_mitene_url = false;
+
+            string url = MiteneWebView.Source.ToString();
+
+
+            if (url.Length >= mitene_url.Length)
+            {
+                url = url.Substring(0, mitene_url.Length);
+                if (url.Equals(mitene_url, StringComparison.OrdinalIgnoreCase))
+                {
+                    is_mitene_url = true;
+                }
+            }
+            if (is_mitene_url)
+            {
+                var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
+
+                string src = WebUtility.UrlDecode(html);
+                src = src.Replace("\\u003C", "<");
+                src = src.Replace("\\\"", "\"");
+
+                var pattern = @"""id"":\d{4,15},""uuid""";
+
+                var login_pattern = "input type=\"password\" name=\"session\\[password\\]\" id=\"session_password\"";
+                isMiteneDataPage = Regex.IsMatch(src, pattern);
+                isMiteneLoginPage = Regex.IsMatch(src, login_pattern);
+
+            }
+            else
+            {
+                isMiteneDataPage = false;
+                isMiteneLoginPage = false;
+            }
+
+            if (isMiteneDataPage)
+            {
+                Menu_DoStart.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Menu_DoStart.Visibility = Visibility.Collapsed;
+            }
+
+            //if (isMiteneDataPage && !inDownloadProsess && !DataReadComplete && inDataReadProsess)
+            if (inDataReadProsess)
+                {
+                    ReadData();
+                if (!DataReadComplete)
+                {
+                    nextPage();
+                }
+            }
+            if (!isMiteneDataPage && !isMiteneLoginPage && !inDownloadProsess && !inDataReadProsess)
+            {
+                MessageEx.ShowWarningDialog("みてねの共有URLではありません。正しい共有URLを設定してください。", Window.GetWindow(this));
+                showSetting();
+            }
+
+        }
+
+
+        private void showWebBrowser()
+        {
+            MainPanel.Visibility = Visibility.Visible;
+            SettingPanel.Visibility = Visibility.Collapsed;
+            FileBrowsePanel.Visibility = Visibility.Collapsed;
+            if(isMiteneDataPage || isMiteneLoginPage)
+            {
+                Menu_DoStart.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Menu_DoStart.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void showFileBrowser()
+        {
+            MainPanel.Visibility = Visibility.Hidden;
+            SettingPanel.Visibility = Visibility.Collapsed;
+            FileBrowsePanel.Visibility = Visibility.Visible;
+            Menu_DoStart.Visibility = Visibility.Collapsed;
+
+        }
+
+        private void showSetting()
+        {
+            MainPanel.Visibility = Visibility.Hidden;
+            SettingPanel.Visibility = Visibility.Visible;
+            FileBrowsePanel.Visibility = Visibility.Collapsed;
+            Menu_DoStart.Visibility = Visibility.Collapsed;
+        }
+
+        private void showBrank()
+        {
+            MainPanel.Visibility = Visibility.Hidden;
+            SettingPanel.Visibility = Visibility.Collapsed;
+            FileBrowsePanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
+        {
+            saveSetting();
+
+            string dirPath = TxtFolderPath.Text;
+            if (!Directory.Exists(Storage_Folder))
+            {
+                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(Shared_URL))
+            {
+                MessageEx.ShowWarningDialog("共有URLが設定されていません。\n共有URLを設定してください。", Window.GetWindow(this));
+                return;
+            }
+
+
+            MiteneWebView.Source = new Uri(Shared_URL);
+            //MiteneWebView.na
+
+            PageLoading();
+        }
+
+        private void InitMiteneTable()
+        {
             miteneData = new DataTable();
             miteneData.Columns.Add("downloadUrl");
             miteneData.Columns.Add("id");
@@ -96,12 +341,10 @@ namespace MiteneLoader
             miteneData.Columns.Add("thumbnailGenerated");
             miteneData.Columns.Add("expiringUrl");
             miteneData.Columns.Add("expiringVideoUrl");
-            miteneData.Columns.Add("fileExist",typeof(bool));
+            miteneData.Columns.Add("fileExist", typeof(bool));
 
-
-
-    }
-    private async void InitAsync()
+        }
+        private async void InitAsync()
         {
             await MiteneWebView.EnsureCoreWebView2Async();
 
@@ -154,68 +397,210 @@ namespace MiteneLoader
             //    Debug.WriteLine(e.ParameterObjectAsJson);
             //};
 
-            try
-            {
-                MiteneWebView.Source = new Uri(Page_Source);
-            }
-            catch
-            {
 
-            }
 
-          
 
         }
 
-
-        private void loadSetting()
+        private async void ReadData()
         {
-            TxtSharedURL.Text = Properties.Settings.Default.Shared_URL;
-            TxtFolderPath.Text = Properties.Settings.Default.Storage_Folder;
-            ChkYearMonthFolder.IsChecked = (Properties.Settings.Default.SubFolder_Type == 1);
-            Page_Source = TxtSharedURL.Text;
+            var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
 
-            string dirPath = TxtFolderPath.Text;
-            if (!Directory.Exists(dirPath))
+            string src = WebUtility.UrlDecode(html);
+            string defaultStr = src;
+
+            src = src.Replace("\\u003C", "<");
+            src = src.Replace("\\\"", "\"");
+            if (string.IsNullOrEmpty(src)) return;
+            int top = src.IndexOf("CDATA");
+            if (top == -1)
             {
-                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
+                inDataReadProsess = false;
+                DataReadComplete = true;
+                doDownload();
                 return;
             }
-            else
+            src = src.Substring(top, src.Length - top);
+            top = src.IndexOf("{\"id");
+            if (top == -1)
             {
-                try
-                {
-                    FileBrowser.Navigate(ShellFileSystemFolder.FromFolderPath(Properties.Settings.Default.Storage_Folder));  // フォルダーがないとエラー
-                }
-                catch
-                {
-                    MessageEx.ShowErrorDialog("ファイルディレクトリがありません");
-                }
-
+                inDataReadProsess = false;
+                DataReadComplete = true;
+                doDownload();
+                return;
             }
 
+            src = src.Substring(top, src.Length - top);
+            var pattern = @"\},\{(""id"":\d{4,15},""uuid"")";
+            src = Regex.Replace(src, pattern, "\n$1");
+            top = src.IndexOf("}]};gon");
+            src = src.Substring(0, top);
+            src = src.Replace("{\"id", "\"id");
+            src = src.Replace("},", "");
+
+            string[] lines = { };
+
+
+            System.IO.StringReader rs = new System.IO.StringReader(src);
+
+            int line_count = 0;
+            while (rs.Peek() > -1)
+            {
+                //一行読み込んで表示する
+                string line = rs.ReadLine();
+                if (line.StartsWith("\"id"))
+                {
+                    Array.Resize(ref lines, lines.Length + 1);
+                    MiteneStruct data = new MiteneStruct(line);
+                    DataRow dr = miteneData.NewRow();
+                    dr["id"] = data.id;
+                    dr["uuid"] = data.uuid;
+                    dr["userId"] = data.userId;
+                    dr["mediaType"] = data.mediaType;
+                    dr["originalHash"] = data.originalHash;
+                    dr["hasComment"] = data.hasComment;
+                    dr["comments"] = data.comments;
+                    dr["footprints"] = data.footprints;
+                    dr["tookAt"] = getUniqtookAt(data.tookAt);
+                    dr["audienceType"] = data.audienceType;
+                    dr["mediaWidth"] = data.mediaWidth;
+                    dr["mediaHeight"] = data.mediaHeight;
+                    dr["mediaOrientation"] = data.mediaOrientation;
+                    dr["latitude"] = data.latitude;
+                    dr["longitude"] = data.longitude;
+                    dr["mediaDeviceModel"] = data.mediaDeviceModel;
+                    dr["deviceFilePath"] = data.deviceFilePath;
+                    dr["videoDuration"] = data.videoDuration;
+                    dr["contentType"] = data.contentType;
+                    dr["origin"] = data.origin;
+                    dr["thumbnailGenerated"] = data.thumbnailGenerated;
+                    dr["expiringUrl"] = data.expiringUrl;
+                    dr["expiringVideoUrl"] = data.expiringVideoUrl;
+                    dr["downloadUrl"] = this.Shared_URL + "/media_files/" + data.uuid + "/download";
+                    dr["fileExist"] = FileExistCheckPath(data.uuid, dr["tookAt"].ToString());
+                    miteneData.Rows.Add(dr);
+                    line_count++;
+                }
+            }
+
+            string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
+            Debug.Print("MiteneWebView.DataLoad: " + count);
 
         }
 
-        private void saveSetting()
+        #region Window_Event *******************************************
+
+        private void Btn_Min_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.Shared_URL = TxtSharedURL.Text;
-            Properties.Settings.Default.Storage_Folder = TxtFolderPath.Text;
-            Page_Source = TxtSharedURL.Text;
+            WindowState = WindowState.Minimized;
+        }
 
-            if ((bool)ChkYearMonthFolder.IsChecked)
+        private void Btn_Max_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
             {
-                Properties.Settings.Default.SubFolder_Type = 1;
+                WindowState = WindowState.Maximized;
             }
             else
             {
-                Properties.Settings.Default.SubFolder_Type = 0;
+                WindowState = WindowState.Normal;
             }
-
-            Properties.Settings.Default.Save();
-
         }
 
+        private void Btn_Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnFolder_Click(object sender, RoutedEventArgs e)
+        {
+
+            var cofd = new CommonOpenFileDialog();
+
+            cofd.Title = "フォルダを選択してください";
+            if (string.IsNullOrEmpty(TxtFolderPath.Text))
+            {
+                cofd.InitialDirectory = @"C:";
+            }
+            else
+            {
+                cofd.InitialDirectory = TxtFolderPath.Text;
+
+            }
+            cofd.IsFolderPicker = true;
+
+            if (cofd.ShowDialog() != CommonFileDialogResult.Ok)
+            {
+                return;
+            }
+
+            TxtFolderPath.Text = cofd.FileName;
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            progressBar.Width = this.Width - 30;
+        }
+
+        #endregion
+        //
+        #region Menu_Click_Event **************************************
+        private void Menu_MitenePageCheck_Click(object sender, RoutedEventArgs e)
+        {
+            checkMitenePage();
+
+            if (isMiteneDataPage)
+            {
+                MessageEx.ShowInformationDialog("みてねの共有URLデータページです。", Window.GetWindow(this));
+            }
+            else if (isMiteneLoginPage)
+            {
+
+                MessageEx.ShowInformationDialog("みてねの共有URLログインページです。", Window.GetWindow(this));
+            }
+            else
+            {
+                MessageEx.ShowWarningDialog("みてねの共有URLページではりません。", Window.GetWindow(this));
+            }
+        }
+
+        private void Menu_CookieDelete_Click(object sender, RoutedEventArgs e)
+        {
+            MiteneWebView.CoreWebView2.CookieManager.DeleteAllCookies();
+        }
+
+        private void Menu_DoStart_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.Print("MiteneWebView.inDataReadProsess:");
+            FirstPage(); //最初のページへ戻してから処理する
+            System.Threading.Thread.Sleep(1000);
+            inDataReadProsess = true;
+            setAllMenuEnable(false);
+            ReadData();
+            if (!DataReadComplete)
+            {
+                nextPage();
+            }
+        }
+
+        private void Menu_Configration_Click(object sender, RoutedEventArgs e)
+        {
+            showSetting();
+        }
+
+
+        private void Menu_FileBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            showFileBrowser();
+        }
+
+        private void Menu_WebBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            showWebBrowser();
+        }
+        #endregion
+        //
+        #region WebView2_Event **************************************
         // MiteneWebView2
 
         private void MiteneWebViewOnContentLoading(object sender, CoreWebView2ContentLoadingEventArgs e)
@@ -252,9 +637,95 @@ namespace MiteneLoader
         {
             Debug.Print("MiteneWebView.ZoomFactorChanged:");
         }
+        #endregion
+        //
+        #region CoreView2_Event **************************************
 
         // MiteneWebView.CoreWebView2
 
+        // Ref https://stackoverflow.com/questions/67537998/webview2-download-progress
+        private async void CoreWebView2OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            Debug.Print($"MiteneWebView.CoreWebView2.NavigationCompleted: {nameof(e.NavigationId)} = {e.NavigationId}, {nameof(e.IsSuccess)} = {e.IsSuccess}");
+
+            checkMitenePage();
+            //if (isMiteneDataPage && !inDownloadProsess && !DataReadComplete && inDataReadProsess)
+            //{
+            //    ReadData();
+            //    if (!DataReadComplete)
+            //    {
+            //        nextPage();
+            //    }
+            //}
+            //if (!isMiteneDataPage && !isMiteneLoginPage && !inDownloadProsess)
+            //{
+            //    //MessageEx.ShowWarningDialog("みてねの共有URLではありません。正しい共有URLを設定してください。", Window.GetWindow(this));
+            //    showSetting();
+            //}
+        }
+
+        private void CoreWebView2OnDownloadStarting(object sender, CoreWebView2DownloadStartingEventArgs e)
+        {
+            Debug.Print($"MiteneWebView.CoreWebView2.DownloadStarting: {nameof(e.ResultFilePath)} = {e.ResultFilePath}");
+            string download_path = e.ResultFilePath;
+            string newpath = getRenameSavePath(download_path);
+            if (!System.IO.File.Exists(newpath))
+            {
+                var DownloadOperation = e.DownloadOperation;
+                e.ResultFilePath = newpath;
+
+                downloadOperation = e.DownloadOperation; // Store the 'DownloadOperation' for later use in events
+                                                         //downloadOperation.BytesReceivedChanged += DownloadOperation_BytesReceivedChanged; // Subscribe to BytesReceivedChanged event
+                                                         //downloadOperation.EstimatedEndTimeChanged += DownloadOperation_EstimatedEndTimeChanged; // Subsribe to EstimatedEndTimeChanged event
+                downloadOperation.StateChanged += DownloadOperation_StateChanged;
+            }
+            else
+            {
+                e.Cancel = true;
+                //シグナル初期化
+                condition.Signal();
+                System.Threading.Thread.Sleep(1);
+                condition.Reset();
+            }
+        }
+
+        #endregion
+        //
+        #region DownloadOperation_Event **************************************
+
+        private void DownloadOperation_EstimatedEndTimeChanged(object sender, object e)
+        {
+            var ans = downloadOperation.EstimatedEndTime.ToString(); // Show the progress
+            var fi = downloadOperation.ResultFilePath.ToString();
+            Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_EstimatedEndTimeChanged " + ans + "(" + fi + ")");
+        }
+
+        private void DownloadOperation_BytesReceivedChanged(object sender, object e)
+        {
+            var recive = downloadOperation.BytesReceived.ToString(); // Show the progress
+            var size = downloadOperation.TotalBytesToReceive.ToString();
+            var fi = downloadOperation.ResultFilePath.ToString();
+            Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_BytesReceivedChanged " + recive + "/" + size + "(" + fi + ")");
+        }
+
+        private void DownloadOperation_StateChanged(object sender, object e)
+        {
+            var state = downloadOperation.State.ToString(); // Show the progress
+            var fi = downloadOperation.ResultFilePath.ToString();
+            Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_StateChanged " + state + "(" + fi + ")");
+
+            if (state == "Completed")
+            {
+                //シグナル初期化
+                condition.Signal();
+                System.Threading.Thread.Sleep(1);
+                condition.Reset();
+            }
+
+        }
+        #endregion
+        //
+        #region Not Use CoreView2_Event **************************************
         private void CoreWebView2OnBasicAuthenticationRequested(object sender, CoreWebView2BasicAuthenticationRequestedEventArgs e)
         {
             Debug.Print($"MiteneWebView.CoreWebView2.BasicAuthenticationRequested: {nameof(e.Uri)} = {e.Uri}");
@@ -290,63 +761,6 @@ namespace MiteneLoader
             Debug.Print($"MiteneWebView.CoreWebView2.DOMContentLoaded: {nameof(e.NavigationId)} = {e.NavigationId}");
         }
 
-        private void CoreWebView2OnDownloadStarting(object sender, CoreWebView2DownloadStartingEventArgs e)
-        {
-            Debug.Print($"MiteneWebView.CoreWebView2.DownloadStarting: {nameof(e.ResultFilePath)} = {e.ResultFilePath}");
-            string download_path = e.ResultFilePath;
-            string newpath = getSavePath(download_path);
-            if (!System.IO.File.Exists(newpath))
-             
-            {
-                var DownloadOperation = e.DownloadOperation;
-                e.ResultFilePath = newpath;
-
-                downloadOperation = e.DownloadOperation; // Store the 'DownloadOperation' for later use in events
-                                                         //downloadOperation.BytesReceivedChanged += DownloadOperation_BytesReceivedChanged; // Subscribe to BytesReceivedChanged event
-                                                         //downloadOperation.EstimatedEndTimeChanged += DownloadOperation_EstimatedEndTimeChanged; // Subsribe to EstimatedEndTimeChanged event
-                downloadOperation.StateChanged += DownloadOperation_StateChanged;
-            } 
-            else
-            {
-                e.Cancel = true;
-                //シグナル初期化
-                condition.Signal();
-                System.Threading.Thread.Sleep(1);
-                condition.Reset();
-            }
-        }
-
-        private void DownloadOperation_EstimatedEndTimeChanged(object sender, object e)
-        {
-            var ans = downloadOperation.EstimatedEndTime.ToString(); // Show the progress
-            var fi = downloadOperation.ResultFilePath.ToString();
-            Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_EstimatedEndTimeChanged " + ans + "(" + fi +")");
-        }
-
-        private void DownloadOperation_BytesReceivedChanged(object sender, object e)
-        {
-            var recive  = downloadOperation.BytesReceived.ToString(); // Show the progress
-            var size = downloadOperation.TotalBytesToReceive.ToString();
-            var fi = downloadOperation.ResultFilePath.ToString();
-            Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_BytesReceivedChanged " + recive + "/" + size + "(" + fi + ")");
-        }
-
-        private void DownloadOperation_StateChanged(object sender, object e)
-        {
-            var state = downloadOperation.State.ToString(); // Show the progress
-            var fi = downloadOperation.ResultFilePath.ToString();
-            Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_StateChanged " + state + "(" + fi + ")");
-
-            if (state == "Completed")
-            {
-                //シグナル初期化
-                condition.Signal();
-                System.Threading.Thread.Sleep(1);
-                condition.Reset();
-            }
-
-        }
-
         private void CoreWebView2OnFrameCreated(object sender, CoreWebView2FrameCreatedEventArgs e)
         {
             Debug.Print($"MiteneWebView.CoreWebView2.FrameCreated: {nameof(e.Frame)} = {e.Frame.Name}");
@@ -380,21 +794,6 @@ namespace MiteneLoader
         private void CoreWebView2OnIsMutedChanged(object sender, object e)
         {
             Debug.Print($"MiteneWebView.CoreWebView2.IsMutedChanged:");
-        }
-
-        private async void CoreWebView2OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            Debug.Print($"MiteneWebView.CoreWebView2.NavigationCompleted: {nameof(e.NavigationId)} = {e.NavigationId}, {nameof(e.IsSuccess)} = {e.IsSuccess}");
-
-            checkMitenePage();
-            if (isMiteneDataPage && !isDownload && !endofData && readStart)
-            {
-                ReadData();
-                if (!endofData)
-                {
-                    nextPage();
-                }
-            }
         }
 
         private void CoreWebView2OnNavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
@@ -492,92 +891,14 @@ namespace MiteneLoader
         {
             Debug.Print($"MiteneWebView.CoreWebView2.WindowCloseRequested:");
         }
+        #endregion
+        //
 
 
-        private async void ReadData()
-        {
-            var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
-
-            string src = WebUtility.UrlDecode(html);
-            string defaultStr = src;
-
-            src = src.Replace("\\u003C", "<");
-            src = src.Replace("\\\"", "\"");
-            if (string.IsNullOrEmpty(src)) return;
-            int top = src.IndexOf("CDATA");
-            if (top == -1)
-            {
-                endofData = true;
-                doDownload();
-                return;
-            }
-            src = src.Substring(top, src.Length - top);
-            top = src.IndexOf("{\"id");
-            if (top == -1)
-            {
-                endofData = true;
-                doDownload();
-                return;
-            }
-
-            src = src.Substring(top, src.Length - top);
-            var pattern = @"\},\{(""id"":\d{4,15},""uuid"")";
-            src = Regex.Replace(src, pattern, "\n$1");
-            top = src.IndexOf("}]};gon");
-            src = src.Substring(0, top);
-            src = src.Replace("{\"id", "\"id");
-            src = src.Replace("},", "");
-
-            string[] lines = { };
-
-
-            System.IO.StringReader rs = new System.IO.StringReader(src);
-
-            int line_count = 0;
-            while (rs.Peek() > -1)
-            {
-                //一行読み込んで表示する
-                string line = rs.ReadLine();
-                if (line.StartsWith("\"id"))
-                {
-                    Array.Resize(ref lines, lines.Length + 1);
-                    MiteneStruct data = new MiteneStruct(line);
-                    DataRow dr = miteneData.NewRow();
-                    dr["id"] = data.id;
-                    dr["uuid"] = data.uuid;
-                    dr["userId"] = data.userId;
-                    dr["mediaType"] = data.mediaType;
-                    dr["originalHash"] = data.originalHash;
-                    dr["hasComment"] = data.hasComment;
-                    dr["comments"] = data.comments;
-                    dr["footprints"] = data.footprints;
-                    dr["tookAt"] = getUniqtookAt(data.tookAt);
-                    dr["audienceType"] = data.audienceType;
-                    dr["mediaWidth"] = data.mediaWidth;
-                    dr["mediaHeight"] = data.mediaHeight;
-                    dr["mediaOrientation"] = data.mediaOrientation;
-                    dr["latitude"] = data.latitude;
-                    dr["longitude"] = data.longitude;
-                    dr["mediaDeviceModel"] = data.mediaDeviceModel;
-                    dr["deviceFilePath"] = data.deviceFilePath;
-                    dr["videoDuration"] = data.videoDuration;
-                    dr["contentType"] = data.contentType;
-                    dr["origin"] = data.origin;
-                    dr["thumbnailGenerated"] = data.thumbnailGenerated;
-                    dr["expiringUrl"] = data.expiringUrl;
-                    dr["expiringVideoUrl"] = data.expiringVideoUrl;
-                    dr["downloadUrl"] = this.Page_Source + "/media_files/" + data.uuid + "/download";
-                    dr["fileExist"] = FileExistCheckPath(data.uuid, dr["tookAt"].ToString());
-                    miteneData.Rows.Add(dr);
-                    line_count++;
-                }
-            }
-
-            string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
-            Debug.Print("MiteneWebView.DataLoad: " + count);
-
-        }
-
+        /// <summary>
+        /// 重複しないTookAtデータを(を取得する　例2023-08-22T19:08:25 09:00(1)
+        /// <param name="tookAt">みてねtookAt</param>
+        /// </summary>
         private string getUniqtookAt(string tookAt)
         {
             string newName = tookAt;
@@ -598,26 +919,30 @@ namespace MiteneLoader
                 }
             }
             return newName;
-
         }
 
         private void nextPage()
         {
             page_count++;
-            string nextPage = Page_Source + "?page=" + page_count;
+            string nextPage = Shared_URL + "?page=" + page_count;
             MiteneWebView.CoreWebView2.Navigate(nextPage);
         }
 
         private void FirstPage()
         {
             page_count = 1;
-            string url = Page_Source;
+            string url = Shared_URL;
             ;
             MiteneWebView.Source = new Uri(url);
         }
 
-
-        private string getSavePath(string download_path)
+        /// <summary>
+        /// ダウンローダが返す保存ファイル名(uuid)でみてねデータを検索し
+        /// TookAt(uuid)形式の保存フォルダーを含むフルパスとして返す。
+        /// </summary>
+        /// <param name="download_path">ダウンローダが返す保存ファイル名</param>
+        /// <returns></returns>
+        private string getRenameSavePath(string download_path)
         {
             string uuid = System.IO.Path.GetFileNameWithoutExtension(download_path);
             string ex = System.IO.Path.GetExtension(download_path);
@@ -625,6 +950,10 @@ namespace MiteneLoader
             if (string.IsNullOrEmpty(ex)) ex = ".*";
 
             DataRow row = getMiteneDataByUuid(uuid);
+            string tookAT = "";
+
+
+
             string file_name = "";
             if (row == null)
             {
@@ -632,40 +961,82 @@ namespace MiteneLoader
             }
             else
             {
-                file_name = getFileName(row, ex);
+                tookAT = row["tookAt"].ToString();
+                string uuid2 = row["uuid"].ToString();
+                string date = tookAT.Replace(":", "-").Substring(0, 19);
+
+                file_name = date + "(" + uuid + ")" + ex;
             }
-
-            string folder_path = getFoldrPath();
-
+            string folder_path = getFoldrPath(tookAT);
             return folder_path + @"\" + file_name;
         }
+ 
+        /// <summary>
+        /// みてねデータが保存済みかどうかを調べる
+        /// TookAt(uuid)形式の保存フォルダーを含むフルパスとして返す。
+        /// </summary>
+        /// <param name="uuid,">みてねデータのuuid</param>
+        /// <param name="tookAt,">みてねデータのtookAt</param>
+        /// <returns></returns>
+        private string getFileName(DataRow row, string extension)
+        {
+            if (row == null) return "";
+            string tookAT = row["tookAt"].ToString();
+            string uuid = row["uuid"].ToString();
+            string date = tookAT.Replace(":", "-").Substring(0, 19);
+            if (string.IsNullOrEmpty(extension)) extension = ".*";
 
+            return date + "(" + uuid + ")" + extension;
+        }
+
+        /// <summary>
+        /// みてねデータが保存済みかどうかを調べる
+        /// TookAt(uuid)形式の保存フォルダーを含むフルパスとして返す。
+        /// </summary>
+        /// <param name="uuid,">みてねデータのuuid</param>
+        /// <param name="tookAt,">みてねデータのtookAt</param>
+        /// <returns></returns>
         private bool FileExistCheckPath(string uuid, string tookAt)
         {
+            //年月フォルダーと保存ルートフォルダーの両方をしらべ
+            //ファイルが存在する場合は、
+            //useYearMonthFolderの設定に従い移動処理を行いtrueを返す。
+            //ファイルがない場合は、falseを返す
+
+            string normal_path = Storage_Folder;
+            string year_month_path = getFoldrPath(tookAt);
+
             string date = tookAt.Replace(":", "-").Substring(0, 19);
-            string folder_path = getFoldrPath();
             string extension = ".*";
             string check_file_name = date + "(" + uuid + ")" + extension;
 
-            var fileList1 = Directory.GetFiles(folder_path, check_file_name);
+            var fileList1 = Directory.GetFiles(normal_path, check_file_name);
+            bool normal_found = (fileList1.Length > 0);
 
-            if (fileList1.Length > 0)
+            bool year_month_found = false;
+            if (System.IO.Directory.Exists(year_month_path))
+            {
+                var fileList2 = Directory.GetFiles(year_month_path, check_file_name);
+                year_month_found = (fileList2.Length > 0);
+            }
+
+
+            if (useYearMonthFolder)
+            {
+                //ファイルの移動処理をここで書く
+            }
+            else
+            {
+
+            }
+
+            if (normal_found || year_month_found)
             {
                 return true;
             }
             return false;
         }
 
-        private string getFileName(DataRow row,string extension)
-        {
-            if (row == null) return "";
-            string tookAT = row["tookAt"].ToString();
-            string uuid = row["uuid"].ToString();
-            string date = tookAT.Replace(":", "-").Substring(0,19);
-            if (string.IsNullOrEmpty(extension)) extension = ".*";
-
-            return date+"("+ uuid +")" + extension;
-        }
 
 
 
@@ -681,10 +1052,25 @@ namespace MiteneLoader
         }
 
 
-        private string getFoldrPath()
+        private string getFoldrPath(string TookAt)
         {
-            //return @"C:\WorkSpace\Mitene";
-            return TxtFolderPath.Text;
+            if (string.IsNullOrEmpty(TookAt)) return Storage_Folder;
+
+            string matchStr = @"^\d{4}-\d{2}-\d{2}";
+
+            bool result = Regex.IsMatch(TookAt, matchStr);
+
+            if (!result) return Storage_Folder;
+
+            string date = TookAt.Replace(":", "-").Substring(0, 19);
+            string Year = date.Substring(0, 4);
+            string Month = date.Substring(5, 2);
+            if (useYearMonthFolder)
+            {
+                
+                return Storage_Folder + @"\" + Year + @"\" + Month;
+            }
+            return Storage_Folder;
         }
 
         private async void doDownload()
@@ -692,8 +1078,8 @@ namespace MiteneLoader
             progressBar.Visibility = Visibility.Visible;
             progressText.Visibility = Visibility.Visible;
             progressBar.Width = this.Width - 30;
-            string folder_path = getFoldrPath();
-            isDownload = true;
+            //string folder_path = getFoldrPath();
+            inDownloadProsess = true;
             string result = "";
             progressBar.Maximum = miteneData.Rows.Count;
 
@@ -705,11 +1091,8 @@ namespace MiteneLoader
             int download_count = foundRows.Length;
 
             progressBar.Value = miteneData.Rows.Count - download_count;
-
-
             progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
 
-            //for (int index = 0; index < miteneData.Rows.Count; index++)
             foreach (DataRow row in foundRows)
             {
 
@@ -745,195 +1128,31 @@ namespace MiteneLoader
                 MiteneWebView.CoreWebView2.CloseDefaultDownloadDialog();
             }
 
-            MiteneWebView.CoreWebView2.Navigate(Page_Source);
+            MiteneWebView.CoreWebView2.Navigate(Shared_URL);
             string message = progressBar.Value + "/" + progressBar.Maximum + " ファイル処理完了";
             MessageEx.ShowInformationDialog(message, Window.GetWindow(this));
+            inDataReadProsess = false;
+            DataReadComplete = false;
+            inDataReadProsess = false;
+
+            setAllMenuEnable(true);
+
+
 
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void setAllMenuEnable(bool isEnable)
         {
-            progressBar.Width = this.Width - 30;
-        }
-
-
-        private async void checkMitenePage()
-        {
-            string mitene_url = "https://mitene.us";
-            bool is_mitene_url = false;
-
-            string url = MiteneWebView.Source.ToString();
-            if(url.Length >= mitene_url.Length)
-            {
-                url = url.Substring(0, mitene_url.Length);
-                if (url.Equals(mitene_url, StringComparison.OrdinalIgnoreCase))
-                {
-                    is_mitene_url = true;
-                }
-            }
-
-            if (is_mitene_url)
-            {
-                var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
-
-                string src = WebUtility.UrlDecode(html);
-                src = src.Replace("\\u003C", "<");
-                src = src.Replace("\\\"", "\"");
-
-                var pattern = @"""id"":\d{4,15},""uuid""";
-
-                var login_pattern = "input type=\"password\" name=\"session\\[password\\]\" id=\"session_password\"";
-                isMiteneDataPage = Regex.IsMatch(src, pattern);
-                isMiteneLoginPage = Regex.IsMatch(src, login_pattern);
-
-
-                if (isMiteneDataPage)
-                {
-                    Menu_DoStart.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    Menu_DoStart.Visibility = Visibility.Collapsed;
-                }
-
-            }
-            else
-            {
-                isMiteneDataPage = false;
-                isMiteneLoginPage = false;
-                Menu_DoStart.Visibility = Visibility.Collapsed;
-            }
-
+            Menu_Configration.IsEnabled = isEnable;
+            Menu_DoStart.IsEnabled = isEnable;
+            Menu_FileBrowse.IsEnabled = isEnable;
+            Menu_WebBrowse.IsEnabled = isEnable;
+            Menu_Setting.IsEnabled = isEnable;
 
         }
 
-        private void Btn_Min_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void Btn_Max_Click(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                WindowState = WindowState.Normal;
-            }
-        }
-
-        private void Btn_Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void Menu_MitenePageCheck_Click(object sender, RoutedEventArgs e)
-        {
-            checkMitenePage();
-
-            if (isMiteneDataPage)
-            {
-                MessageEx.ShowInformationDialog("みてねの共有URLデータページです。", Window.GetWindow(this));
-            }
-            else if(isMiteneLoginPage)
-            {
-
-                MessageEx.ShowInformationDialog("みてねの共有URLログインページです。", Window.GetWindow(this));
-            }
-            else
-            {
-                MessageEx.ShowWarningDialog("みてねの共有URLページではりません。", Window.GetWindow(this));
-            }
-        }
-
-        private void Menu_CookieDelete_Click(object sender, RoutedEventArgs e)
-        {
-            MiteneWebView.CoreWebView2.CookieManager.DeleteAllCookies();
-        }
-
-        private void Menu_DoStart_Click(object sender, RoutedEventArgs e)
-        {
-            Debug.Print("MiteneWebView.ReadStart:");
-            FirstPage(); //最初のページへ戻してから処理する
-            System.Threading.Thread.Sleep(1000);
-            readStart = true;
-            ReadData();
-            if (!endofData)
-            {
-                nextPage();
-            }
-        }
-
-        private void Menu_Configration_Click(object sender, RoutedEventArgs e)
-        {
-            loadSetting();
-            MainPanel.Visibility = Visibility.Collapsed;
-            SettingPanel.Visibility = Visibility.Visible;
-        }
-
-        private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
-        {
-            saveSetting();
-
-            string dirPath = TxtFolderPath.Text;
-            if (!Directory.Exists(dirPath))
-            {
-                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
-                return;
-            }
-
-            if (string.IsNullOrEmpty(Page_Source))
-            {
-                MessageEx.ShowWarningDialog("共有URLが設定されていません。\n共有URLを設定してください。", Window.GetWindow(this));
-                return;
-            }
 
 
-            MiteneWebView.Source = new Uri(Page_Source);
-
-            checkMitenePage();
-            if(!isMiteneDataPage && !isMiteneLoginPage)
-            {
-                MessageEx.ShowWarningDialog("みてねの共有URLではありません。\n正しい共有URLを設定してください。", Window.GetWindow(this));
-                return;
-            }
-            SettingPanel.Visibility = Visibility.Collapsed;
-            MainPanel.Visibility = Visibility.Visible;
-
-
-        }
-
-        private void BtnFolder_Click(object sender, RoutedEventArgs e)
-        {
-
-            var cofd = new CommonOpenFileDialog();
-
-            cofd.Title = "フォルダを選択してください";
-            if (string.IsNullOrEmpty(TxtFolderPath.Text))
-            {
-                cofd.InitialDirectory = @"C:";
-            }
-            else
-            {
-                cofd.InitialDirectory = TxtFolderPath.Text;
-
-            }
-            cofd.IsFolderPicker = true;
-
-                if (cofd.ShowDialog() != CommonFileDialogResult.Ok)
-                {
-                    return;
-                }
-
-                TxtFolderPath.Text = cofd.FileName;
-        }
-
-        private void Menu_FileBrowse_Click(object sender, RoutedEventArgs e)
-        {
-            FileBrowsePanel.Visibility = Visibility.Visible;
-        }
     }
 
     public class MiteneStruct
@@ -981,7 +1200,7 @@ namespace MiteneLoader
 
                 int top2 = top + 1;
                 string name = line.Substring(0, top);
-                string value = line.Substring(top2 , line.Length - top2);
+                string value = line.Substring(top2, line.Length - top2);
 
                 name = name.Replace("\"", "");
                 value = value.Replace("\"", "");
