@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MiteneLoader"
+        xmlns:wfc="clr-namespace:Microsoft.WindowsAPICodePack.Controls.WindowsForms;assembly=Microsoft.WindowsAPICodePack.Shell"
         mc:Ignorable="d"
         Style="{DynamicResource DefaultWindowStyle}"
 
@@ -56,11 +57,7 @@
                         <Image Source="Images/Work64.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Window" >
-                    <MenuItem Header="Document 1" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="Document 2" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="Document 3" IsCheckable="True"/>
-                    <MenuItem Header="Document 4" IsCheckable="True"/>
+                <MenuItem x:Name="Menu_FileBrowse" Header="ファイル" Click="Menu_FileBrowse_Click" >
                 </MenuItem>
 
 
@@ -127,7 +124,12 @@
                 </Grid>
             </DockPanel>
 
-
+            <DockPanel x:Name="FileBrowsePanel" Visibility="Collapsed">
+                <WindowsFormsHost>
+                    <wfc:ExplorerBrowser x:Name="FileBrowser" />
+                </WindowsFormsHost>
+            </DockPanel>
+            
 
         </Grid>
 

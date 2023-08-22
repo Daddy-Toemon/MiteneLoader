@@ -35,6 +35,10 @@ using System.Runtime.CompilerServices;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using static System.Net.WebRequestMethods;
 
+using Microsoft.WindowsAPICodePack.Controls;
+using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+using Microsoft.WindowsAPICodePack.Shell;
+
 namespace MiteneLoader
 {
     /// <summary>
@@ -159,6 +163,8 @@ namespace MiteneLoader
 
             }
 
+          
+
         }
 
 
@@ -168,6 +174,27 @@ namespace MiteneLoader
             TxtFolderPath.Text = Properties.Settings.Default.Storage_Folder;
             ChkYearMonthFolder.IsChecked = (Properties.Settings.Default.SubFolder_Type == 1);
             Page_Source = TxtSharedURL.Text;
+
+            string dirPath = TxtFolderPath.Text;
+            if (!Directory.Exists(dirPath))
+            {
+                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
+                return;
+            }
+            else
+            {
+                try
+                {
+                    FileBrowser.Navigate(ShellFileSystemFolder.FromFolderPath(Properties.Settings.Default.Storage_Folder));  // フォルダーがないとエラー
+                }
+                catch
+                {
+                    MessageEx.ShowErrorDialog("ファイルディレクトリがありません");
+                }
+
+            }
+
+
         }
 
         private void saveSetting()
@@ -875,6 +902,7 @@ namespace MiteneLoader
             SettingPanel.Visibility = Visibility.Collapsed;
             MainPanel.Visibility = Visibility.Visible;
 
+
         }
 
         private void BtnFolder_Click(object sender, RoutedEventArgs e)
@@ -900,6 +928,11 @@ namespace MiteneLoader
                 }
 
                 TxtFolderPath.Text = cofd.FileName;
+        }
+
+        private void Menu_FileBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            FileBrowsePanel.Visibility = Visibility.Visible;
         }
     }
 
