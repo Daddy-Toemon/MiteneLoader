@@ -74,24 +74,69 @@ namespace MiteneLoader
             showBrank();
             InitMiteneTable();
             InitAsync();
-            
+            //後の処理は、Window_ContentRenderedイベントハンドラでPageLoading()実行する。
         }
 
-        private void Window_ContentRendered(object sender, EventArgs e)
+        private void PageLoading()
         {
-            PageLoading();
+            bool isConfigRequired = false;
+            string mess = "";
+
+
+            if (string.IsNullOrEmpty(Shared_URL))
+            {
+                isConfigRequired = true;
+                mess = "\"共有URLが設定されていません。共有URLを設定してください。";
+            }
+            else
+            {
+                try
+                {
+                    MiteneWebView.Source = new Uri(Shared_URL);
+                }
+                catch
+                {
+                    isConfigRequired = true;
+                    mess = "指定URLが開けません。設定を確認してください。";
+                }
+
+            }
+
+            if (!Directory.Exists(Storage_Folder))
+            {
+                isConfigRequired = true;
+                if (mess.Length > 0) mess = mess + "\n";
+                mess = mess + "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
+
+                Menu_FileBrowse.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                try
+                {
+                    FileBrowser.Navigate(ShellFileSystemFolder.FromFolderPath(Storage_Folder));  // フォルダーがないとエラー
+                    Menu_FileBrowse.Visibility = Visibility.Visible;
+                }
+                catch
+                {
+                    isConfigRequired = true;
+
+                    if (mess.Length > 0) mess = mess + "\n";
+
+                    mess = mess + "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
+                    Menu_FileBrowse.Visibility = Visibility.Collapsed;
+                }
+
+            }
+
+            if (isConfigRequired)
+            {
+                MessageEx.ShowWarningDialog(mess, Window.GetWindow(this));
+                showSetting();
+                return;
+            }
+            showWebBrowser();
         }
-
-        private void Window_Initialized(object sender, EventArgs e)
-        {
-            //
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-        }
-
-
 
 
         private void loadSetting()
@@ -126,66 +171,6 @@ namespace MiteneLoader
             useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
         }
 
-        private void PageLoading()
-        {
-            bool isConfigRequired = false;
-            string mess = "";
-
-
-            if (string.IsNullOrEmpty(Shared_URL))
-            {
-                isConfigRequired = true;
-                mess = "\"共有URLが設定されていません。共有URLを設定してください。";
-            }
-            else
-            {
-                try
-                {
-                    MiteneWebView.Source = new Uri(Shared_URL);
-                }
-                catch
-                {
-                    isConfigRequired = true;
-                    mess = "指定URLが開けません。設定を確認してください。";
-                }
-
-            }
-
-            if (!Directory.Exists(Storage_Folder))
-            {
-                isConfigRequired = true;
-                if (mess.Length > 0) mess = mess + "\n";
-                mess= mess + "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
-                
-                Menu_FileBrowse.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                try
-                {
-                    FileBrowser.Navigate(ShellFileSystemFolder.FromFolderPath(Storage_Folder));  // フォルダーがないとエラー
-                    Menu_FileBrowse.Visibility= Visibility.Visible;
-                }
-                catch
-                {
-                    isConfigRequired = true;
-
-                    if (mess.Length > 0) mess = mess + "\n";
-
-                    mess = mess + "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
-                    Menu_FileBrowse.Visibility = Visibility.Collapsed;
-                }
-
-            }
-
-            if (isConfigRequired)
-            {
-                MessageEx.ShowWarningDialog(mess, Window.GetWindow(this));
-                showSetting();
-                return;
-            }
-            showWebBrowser();
-        }
 
         private async void checkMitenePage()
         {
@@ -290,29 +275,6 @@ namespace MiteneLoader
             FileBrowsePanel.Visibility = Visibility.Collapsed;
         }
 
-        private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
-        {
-            saveSetting();
-
-            string dirPath = TxtFolderPath.Text;
-            if (!Directory.Exists(Storage_Folder))
-            {
-                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
-                return;
-            }
-
-            if (string.IsNullOrEmpty(Shared_URL))
-            {
-                MessageEx.ShowWarningDialog("共有URLが設定されていません。\n共有URLを設定してください。", Window.GetWindow(this));
-                return;
-            }
-
-
-            MiteneWebView.Source = new Uri(Shared_URL);
-            //MiteneWebView.na
-
-            PageLoading();
-        }
 
         private void InitMiteneTable()
         {
@@ -344,6 +306,11 @@ namespace MiteneLoader
             miteneData.Columns.Add("fileExist", typeof(bool));
 
         }
+
+
+        /// <summary>
+        /// WebView2,CoreWebView2のイベントハンドラーを設定する
+        /// </summary>
         private async void InitAsync()
         {
             await MiteneWebView.EnsureCoreWebView2Async();
@@ -396,12 +363,11 @@ namespace MiteneLoader
             //{
             //    Debug.WriteLine(e.ParameterObjectAsJson);
             //};
-
-
-
-
         }
 
+        /// <summary>
+        /// 表示している、みてね共有URLがらファイル情報を取得する
+        /// </summary>
         private async void ReadData()
         {
             var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
@@ -482,13 +448,85 @@ namespace MiteneLoader
                     line_count++;
                 }
             }
-
             string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
             Debug.Print("MiteneWebView.DataLoad: " + count);
+        }
+
+        /// <summary>
+        /// ダウンロード処理を行う
+        /// </summary>
+        private async void doDownload()
+        {
+            progressBar.Visibility = Visibility.Visible;
+            progressText.Visibility = Visibility.Visible;
+            progressBar.Width = this.Width - 30;
+            //string folder_path = getFoldrPath();
+            inDownloadProsess = true;
+            string result = "";
+            progressBar.Maximum = miteneData.Rows.Count;
+
+            DataRow[] foundRows;
+
+            string selectStr = "fileExist = 'False'";
+            foundRows = miteneData.Select(selectStr);
+
+            int download_count = foundRows.Length;
+
+            progressBar.Value = miteneData.Rows.Count - download_count;
+            progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
+
+            foreach (DataRow row in foundRows)
+            {
+
+                string dPage = row["downloadUrl"].ToString();
+
+                MiteneWebView.CoreWebView2.Navigate(dPage);
+                await Task.Run(() =>
+                {
+                    //読み込み完了まで待機
+                    if (condition.Wait(600000))
+                        result = "ok";
+                    else
+                        result = "timeout";
+                });
+                progressBar.Value++;
+                progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
+
+            }
+
+            if (progressBar.Value >= progressBar.Maximum)
+            {
+                progressText.Text = progressBar.Value + "/" + progressBar.Maximum + " ファイル取込み完了";
+                progressBar.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
+            }
+
+            //MiteneWebView.CoreWebView2.
+            if (MiteneWebView.CoreWebView2.IsDefaultDownloadDialogOpen)
+            {
+                MiteneWebView.CoreWebView2.CloseDefaultDownloadDialog();
+            }
+
+            MiteneWebView.CoreWebView2.Navigate(Shared_URL);
+            string message = progressBar.Value + "/" + progressBar.Maximum + " ファイル処理完了";
+            MessageEx.ShowInformationDialog(message, Window.GetWindow(this));
+            inDataReadProsess = false;
+            DataReadComplete = false;
+            inDataReadProsess = false;
+
+            setAllMenuEnable(true);
 
         }
 
+
         #region Window_Event *******************************************
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            PageLoading();
+        }
 
         private void Btn_Min_Click(object sender, RoutedEventArgs e)
         {
@@ -535,6 +573,30 @@ namespace MiteneLoader
             }
 
             TxtFolderPath.Text = cofd.FileName;
+        }
+ 
+        private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
+        {
+            saveSetting();
+
+            string dirPath = TxtFolderPath.Text;
+            if (!Directory.Exists(Storage_Folder))
+            {
+                MessageEx.ShowWarningDialog("指定の保存フォルダーが存在しません。\n保存フォルダーを選択してください。", Window.GetWindow(this));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(Shared_URL))
+            {
+                MessageEx.ShowWarningDialog("共有URLが設定されていません。\n共有URLを設定してください。", Window.GetWindow(this));
+                return;
+            }
+
+
+            MiteneWebView.Source = new Uri(Shared_URL);
+            //MiteneWebView.na
+
+            PageLoading();
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1038,8 +1100,11 @@ namespace MiteneLoader
         }
 
 
-
-
+        /// <summary>
+        /// uuidを指定して、みてねDatatableから該当するDataRowを取得する
+        /// </summary>
+        /// <param name="uuid,">みてねデータのuuid</param>
+        /// <returns></returns>
         private DataRow getMiteneDataByUuid(string uuid)
         {
             string selectStr = "uuid= '" + uuid + "'";
@@ -1073,73 +1138,6 @@ namespace MiteneLoader
             return Storage_Folder;
         }
 
-        private async void doDownload()
-        {
-            progressBar.Visibility = Visibility.Visible;
-            progressText.Visibility = Visibility.Visible;
-            progressBar.Width = this.Width - 30;
-            //string folder_path = getFoldrPath();
-            inDownloadProsess = true;
-            string result = "";
-            progressBar.Maximum = miteneData.Rows.Count;
-
-            DataRow[] foundRows;
-
-            string selectStr = "fileExist = 'False'";
-            foundRows = miteneData.Select(selectStr);
-
-            int download_count = foundRows.Length;
-
-            progressBar.Value = miteneData.Rows.Count - download_count;
-            progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
-
-            foreach (DataRow row in foundRows)
-            {
-
-                string dPage = row["downloadUrl"].ToString();
-
-                MiteneWebView.CoreWebView2.Navigate(dPage);
-                await Task.Run(() =>
-                {
-                    //読み込み完了まで待機
-                    if (condition.Wait(600000))
-                        result = "ok";
-                    else
-                        result = "timeout";
-                });
-                progressBar.Value++;
-                progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
-
-            }
-
-            if (progressBar.Value >= progressBar.Maximum)
-            {
-                progressText.Text = progressBar.Value + "/" + progressBar.Maximum + " ファイル取込み完了";
-                progressBar.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
-            }
-
-            //MiteneWebView.CoreWebView2.
-            if (MiteneWebView.CoreWebView2.IsDefaultDownloadDialogOpen)
-            {
-                MiteneWebView.CoreWebView2.CloseDefaultDownloadDialog();
-            }
-
-            MiteneWebView.CoreWebView2.Navigate(Shared_URL);
-            string message = progressBar.Value + "/" + progressBar.Maximum + " ファイル処理完了";
-            MessageEx.ShowInformationDialog(message, Window.GetWindow(this));
-            inDataReadProsess = false;
-            DataReadComplete = false;
-            inDataReadProsess = false;
-
-            setAllMenuEnable(true);
-
-
-
-        }
 
         private void setAllMenuEnable(bool isEnable)
         {
