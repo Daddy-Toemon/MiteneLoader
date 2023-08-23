@@ -39,6 +39,7 @@ using Microsoft.WindowsAPICodePack.Controls;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.Drawing;
+using System.Net.NetworkInformation;
 
 namespace MiteneLoader
 {
@@ -220,8 +221,8 @@ namespace MiteneLoader
 
             //if (isMiteneDataPage && !inDownloadProsess && !DataReadComplete && inDataReadProsess)
             if (inDataReadProsess)
-                {
-                    ReadData();
+            {
+                ReadData();
                 if (!DataReadComplete)
                 {
                     nextPage();
@@ -241,7 +242,7 @@ namespace MiteneLoader
             MainPanel.Visibility = Visibility.Visible;
             SettingPanel.Visibility = Visibility.Collapsed;
             FileBrowsePanel.Visibility = Visibility.Collapsed;
-            if(isMiteneDataPage || isMiteneLoginPage)
+            if (isMiteneDataPage || isMiteneLoginPage)
             {
                 Menu_DoStart.Visibility = Visibility.Visible;
             }
@@ -574,7 +575,7 @@ namespace MiteneLoader
 
             TxtFolderPath.Text = cofd.FileName;
         }
- 
+
         private void BtnSettingSave_Click(object sender, RoutedEventArgs e)
         {
             saveSetting();
@@ -638,6 +639,7 @@ namespace MiteneLoader
             System.Threading.Thread.Sleep(1000);
             inDataReadProsess = true;
             setAllMenuEnable(false);
+            miteneData.Clear();
             ReadData();
             if (!DataReadComplete)
             {
@@ -1032,7 +1034,7 @@ namespace MiteneLoader
             string folder_path = getFoldrPath(tookAT);
             return folder_path + @"\" + file_name;
         }
- 
+
         /// <summary>
         /// みてねデータが保存済みかどうかを調べる
         /// TookAt(uuid)形式の保存フォルダーを含むフルパスとして返す。
@@ -1066,31 +1068,90 @@ namespace MiteneLoader
             //ファイルがない場合は、falseを返す
 
             string normal_path = Storage_Folder;
-            string year_month_path = getFoldrPath(tookAt);
+            string year_month_path = getYearMonthFoldrPath(tookAt);
 
             string date = tookAt.Replace(":", "-").Substring(0, 19);
             string extension = ".*";
             string check_file_name = date + "(" + uuid + ")" + extension;
 
-            var fileList1 = Directory.GetFiles(normal_path, check_file_name);
-            bool normal_found = (fileList1.Length > 0);
+            string[] normal_files = null;
+            string[] year_month_files = null;
+
+            normal_files = Directory.GetFiles(normal_path, check_file_name);
+            bool normal_found = (normal_files.Length > 0);
 
             bool year_month_found = false;
             if (System.IO.Directory.Exists(year_month_path))
             {
-                var fileList2 = Directory.GetFiles(year_month_path, check_file_name);
-                year_month_found = (fileList2.Length > 0);
+                year_month_files = Directory.GetFiles(year_month_path, check_file_name);
+                year_month_found = (year_month_files.Length > 0);
             }
 
 
+            //ファイル移動処理
             if (useYearMonthFolder)
             {
-                //ファイルの移動処理をここで書く
+                //年月サブフォルダー使用時サブフォルダーがなければ作成
+                if (!System.IO.Directory.Exists(year_month_path))
+                {
+                    Directory.CreateDirectory(year_month_path);
+                }
+
+
+                if (normal_found)
+                {
+                    foreach (string from_file in normal_files)
+                    {
+                        string file_name = System.IO.Path.GetFileName(from_file);
+                        string to_file = year_month_path + @"\" + file_name;
+                        if (!System.IO.File.Exists(to_file))
+                        {
+                            System.IO.File.Move(from_file, to_file);
+                        }
+                        else
+                        {
+                            System.IO.File.Delete(from_file);
+                        }
+                    }
+                }
             }
             else
             {
+                if (year_month_found)
+                {
+                    foreach (string from_file in year_month_files)
+                    {
+                        string file_name = System.IO.Path.GetFileName(from_file);
+                        string to_file = normal_path + @"\" + file_name;
+                        if (!System.IO.File.Exists(to_file))
+                        {
+                            System.IO.File.Move(from_file, to_file);
+                        }
+                        else
+                        {
+                            System.IO.File.Delete(from_file);
+                        }
+                    }
+                }
 
+                //サブフォルダー内残ファイル移動及びサブフォルダー削除
+
+                string[] sub_dirs = Directory.GetDirectories(normal_path);
+                foreach(string sub_dir in sub_dirs)
+                {
+                    IEnumerable<string> files = System.IO.Directory.EnumerateFiles(sub_dir, "*", System.IO.SearchOption.AllDirectories);
+
+                    foreach (string from_file in files)
+                    {
+                        string file_name = System.IO.Path.GetFileName(from_file);
+                        string to_file = normal_path + @"\" + file_name;
+                        System.IO.File.Move(from_file, to_file);
+                    }
+                    Directory.Delete(sub_dir,true);
+                }
             }
+
+
 
             if (normal_found || year_month_found)
             {
@@ -1119,6 +1180,15 @@ namespace MiteneLoader
 
         private string getFoldrPath(string TookAt)
         {
+            if (useYearMonthFolder)
+            {
+                return getYearMonthFoldrPath(TookAt);
+            }
+            return Storage_Folder;
+        }
+
+        private string getYearMonthFoldrPath(string TookAt)
+        {
             if (string.IsNullOrEmpty(TookAt)) return Storage_Folder;
 
             string matchStr = @"^\d{4}-\d{2}-\d{2}";
@@ -1130,14 +1200,8 @@ namespace MiteneLoader
             string date = TookAt.Replace(":", "-").Substring(0, 19);
             string Year = date.Substring(0, 4);
             string Month = date.Substring(5, 2);
-            if (useYearMonthFolder)
-            {
-                
-                return Storage_Folder + @"\" + Year + @"\" + Month;
-            }
-            return Storage_Folder;
+            return Storage_Folder + @"\" + Year + @"\" + Month;
         }
-
 
         private void setAllMenuEnable(bool isEnable)
         {
