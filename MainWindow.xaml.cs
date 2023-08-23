@@ -1374,6 +1374,15 @@ namespace MiteneLoader
                 MiteneWebView.CoreWebView2.CookieManager.DeleteAllCookies();
             }
         }
+
+        private bool isNetworkAvailable()
+        {
+            //ネットワークに接続されているか調べる
+            if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                return true;
+            else
+                return false;
+        }
     }
 
     public class MiteneStruct
