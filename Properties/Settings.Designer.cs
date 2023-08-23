@@ -26,6 +26,7 @@ namespace MiteneLoader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
         public string Shared_URL {
             get {
                 return ((string)(this["Shared_URL"]));
@@ -37,7 +38,7 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Mitene_Data")]
         public string Storage_Folder {
             get {
                 return ((string)(this["Storage_Folder"]));

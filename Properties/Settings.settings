@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="Shared_URL" Type="(Web Service URL)" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">https://mitene.us/f/</Value>
     </Setting>
     <Setting Name="Storage_Folder" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">C:\Mitene_Data</Value>
     </Setting>
     <Setting Name="SubFolder_Type" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>

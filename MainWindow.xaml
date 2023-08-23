@@ -51,8 +51,8 @@
                 </Button>
             </Grid>
 
-            <Menu x:Name="myMenu" Grid.Column="2"  WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,5,0,5" Height="20" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
-                <MenuItem x:Name="Menu_DoStart" Header="処理開始" Click="Menu_DoStart_Click" Visibility="Collapsed" >
+            <Menu x:Name="myMenu" Grid.Column="2"  WindowChrome.IsHitTestVisibleInChrome="True" Margin="20,5,0,5" Height="20" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Width="300" HorizontalAlignment="Left">
+                <MenuItem x:Name="Menu_DoStart" Header="処理開始(_D)" Click="Menu_DoStart_Click" Visibility="Collapsed" Width="95" Margin="0,0,5,0" >
                     <!--<MenuItem.Icon>
                         <Image Source="Images/Work64.png"/>
                     </MenuItem.Icon>-->
@@ -60,19 +60,19 @@
                         <ToolTip Content="みてねデータの解析・ダウンロード処理を行います。"/>
                     </MenuItem.ToolTip>
                 </MenuItem>
-                <MenuItem x:Name="Menu_WebBrowse" Header="Webブラウザ" Click="Menu_WebBrowse_Click" >
+                <MenuItem x:Name="Menu_WebBrowse" Header="Webブラウザ(_W)" Click="Menu_WebBrowse_Click" Width="95" Margin="0,0,5,0" >
                     <MenuItem.ToolTip>
                         <ToolTip Content="Webブラウザを表示します。"/>
                     </MenuItem.ToolTip>
                 </MenuItem>
 
-                <MenuItem x:Name="Menu_FileBrowse" Header="Fileブラウザ" Click="Menu_FileBrowse_Click" >
+                <MenuItem x:Name="Menu_FileBrowse" Header="Fileブラウザ(_F)" Click="Menu_FileBrowse_Click" Width="95" Margin="0,0,5,0" >
                     <MenuItem.ToolTip>
                         <ToolTip Content="ダウンロードしたデータの保存先を表示します。"/>
                     </MenuItem.ToolTip>
                 </MenuItem>
 
-                <MenuItem x:Name="Menu_Setting" Header="設定(_S)">
+                <MenuItem x:Name="Menu_Setting" Header="設定(_S)" Width="95">
                     <!--<MenuItem.Icon>
                         <Image Source="Images/Settings.png"/>
                     </MenuItem.Icon>-->

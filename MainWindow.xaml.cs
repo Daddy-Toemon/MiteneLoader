@@ -61,6 +61,7 @@ namespace MiteneLoader
 
         bool isMiteneDataPage = false;
         bool isMiteneLoginPage = false;
+        bool isMitenePage = false;
 
         string Shared_URL;
         string Storage_Folder;
@@ -206,14 +207,18 @@ namespace MiteneLoader
                 var pattern = @"""id"":\d{4,15},""uuid""";
 
                 var login_pattern = "input type=\"password\" name=\"session\\[password\\]\" id=\"session_password\"";
+
+                var setting_psge_pattarn = "Mitene.Utils.FollowerAccessTokenManager.setToken";
+
                 isMiteneDataPage = Regex.IsMatch(src, pattern);
                 isMiteneLoginPage = Regex.IsMatch(src, login_pattern);
-
+                isMitenePage = Regex.IsMatch(src, setting_psge_pattarn);
             }
             else
             {
                 isMiteneDataPage = false;
                 isMiteneLoginPage = false;
+                isMitenePage = false;
             }
 
             if (isMiteneDataPage)
@@ -237,7 +242,7 @@ namespace MiteneLoader
                     nextPage();
                 }
             }
-            if (!isMiteneDataPage && !isMiteneLoginPage && !inDownloadProsess && !inDataReadProsess && !DataDownloadComplete)
+            if (!isMiteneDataPage && !isMiteneLoginPage && !isMitenePage && !inDownloadProsess && !inDataReadProsess && !DataDownloadComplete)
             {
                 MessageEx.ShowWarningDialog("みてねの共有URLではありません。正しい共有URLを設定してください。", Window.GetWindow(this));
                 showSetting();
@@ -275,6 +280,24 @@ namespace MiteneLoader
 
             Menu_WebBrowse.Visibility = Visibility.Visible;
             Menu_DoStart.Visibility = Visibility.Collapsed;
+
+            //ここで最新の状態に更新して表示したい
+
+            // FileBrowser.Refresh();  <-- NG
+
+            //  ↓　NG
+
+            //try
+            //{
+            //    FileBrowser.Navigate(ShellFileSystemFolder.FromFolderPath(Storage_Folder));  // フォルダーがないとエラー
+            //}
+            //catch
+            //{
+            //    string mess = "指定の保存フォルダーが存在しません。保存フォルダーを設定してください。";
+            //    MessageEx.ShowWarningDialog(mess, Window.GetWindow(this));
+            //    showSetting();
+            //    return;
+            //}
 
         }
 
