@@ -270,6 +270,7 @@ namespace MiteneLoader
                 Menu_WebBrowse.Visibility = Visibility.Visible;
 
             }
+            setProgressText();
         }
 
         private void showFileBrowser()
@@ -740,7 +741,35 @@ namespace MiteneLoader
             }
             else
             {
-                progressText.Text = "";
+                //AssemblyTitleの取得
+                System.Reflection.AssemblyTitleAttribute asmttl =
+                    (System.Reflection.AssemblyTitleAttribute)
+                    Attribute.GetCustomAttribute(
+                        System.Reflection.Assembly.GetExecutingAssembly(),
+                        typeof(System.Reflection.AssemblyTitleAttribute));
+
+                //AssemblyCopyrightの取得
+                System.Reflection.AssemblyCopyrightAttribute asmcpy =
+                    (System.Reflection.AssemblyCopyrightAttribute)
+                    Attribute.GetCustomAttribute(
+                    System.Reflection.Assembly.GetExecutingAssembly(),
+                    typeof(System.Reflection.AssemblyCopyrightAttribute));
+
+                //AssemblyCompanyの取得
+                System.Reflection.AssemblyCompanyAttribute asmcmp =
+                    (System.Reflection.AssemblyCompanyAttribute)
+                    Attribute.GetCustomAttribute(
+                    System.Reflection.Assembly.GetExecutingAssembly(),
+                    typeof(System.Reflection.AssemblyCompanyAttribute));
+                Console.WriteLine(asmcmp.Company);
+
+                //自分自身のAssemblyを取得
+                System.Reflection.Assembly asm =
+                    System.Reflection.Assembly.GetExecutingAssembly();
+                //バージョンの取得
+                System.Version ver = asm.GetName().Version;
+
+                progressText.Text = asmttl.Title + " Ver." + ver + " " + asmcpy.Copyright + " " + asmcmp.Company;
 
             }
         }
