@@ -7,11 +7,11 @@ using System.Windows;
 // アセンブリに関する一般的な情報は、次の方法で制御されます
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("みてねローダー")]
+[assembly: AssemblyTitle("MiteneLoader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Toemon")]
-[assembly: AssemblyProduct("MiteneLoader")]
+[assembly: AssemblyProduct("みてねローダ")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

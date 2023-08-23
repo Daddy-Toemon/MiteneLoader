@@ -748,6 +748,15 @@ namespace MiteneLoader
                         System.Reflection.Assembly.GetExecutingAssembly(),
                         typeof(System.Reflection.AssemblyTitleAttribute));
 
+                //AssemblyProductの取得
+                System.Reflection.AssemblyProductAttribute asmprd =
+                    (System.Reflection.AssemblyProductAttribute)
+                    Attribute.GetCustomAttribute(
+                    System.Reflection.Assembly.GetExecutingAssembly(),
+                    typeof(System.Reflection.AssemblyProductAttribute));
+                Console.WriteLine(asmprd.Product);
+
+
                 //AssemblyCopyrightの取得
                 System.Reflection.AssemblyCopyrightAttribute asmcpy =
                     (System.Reflection.AssemblyCopyrightAttribute)
@@ -769,7 +778,7 @@ namespace MiteneLoader
                 //バージョンの取得
                 System.Version ver = asm.GetName().Version;
 
-                progressText.Text = asmttl.Title + " Ver." + ver + " " + asmcpy.Copyright + " " + asmcmp.Company;
+                progressText.Text = asmprd.Product + " Ver." + ver + " " + asmcpy.Copyright + " " + asmcmp.Company;
 
             }
         }
