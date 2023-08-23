@@ -58,5 +58,17 @@ namespace MiteneLoader.Properties {
                 this["SubFolder_Type"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Login_Cookie_Clear {
+            get {
+                return ((bool)(this["Login_Cookie_Clear"]));
+            }
+            set {
+                this["Login_Cookie_Clear"] = value;
+            }
+        }
     }
 }

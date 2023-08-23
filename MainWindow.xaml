@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Style="{DynamicResource DefaultWindowStyle}"
 
-        Title="MainWindow" Height="600" Width="1024" SizeChanged="Window_SizeChanged" ContentRendered="Window_ContentRendered" StateChanged="Window_StateChanged">
+        Title="MainWindow" Height="600" Width="1024" SizeChanged="Window_SizeChanged" ContentRendered="Window_ContentRendered" StateChanged="Window_StateChanged" Closing="Window_Closing">
 
     <Window.Resources>
         <Image x:Key="ImageWinStateMax" Source="Images/Full_Window.png" Width="12" Height="12"/>
@@ -97,6 +97,7 @@
                 <Wpf:WebView2 x:Name="MiteneWebView" Source="https://mitene.us/f/" Margin="0,0,5,0" />
 
             </DockPanel>
+            
             <DockPanel x:Name="SettingPanel" Visibility="Collapsed">
                 <Grid Margin="15,5,15,15">
                     <Grid.ColumnDefinitions>
@@ -106,6 +107,7 @@
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
@@ -122,10 +124,14 @@
                     <Label Grid.Row="2" Grid.Column="0" Content="保存フォルダー" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
                     <TextBox x:Name="TxtFolderPath" Grid.Row="2" Grid.Column="2"  FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" />
                     <Button x:Name="BtnFolder" Grid.Row="2" Grid.Column="3" Content="..." Height="30" Click="BtnFolder_Click"/>
+
                     <Label Grid.Row="3" Grid.Column="0" Content="フォルダー構成" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
                     <CheckBox x:Name="ChkYearMonthFolder" Grid.Row="3" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="年・月フォルダーに分ける" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-                    <Button x:Name="BtnSettingSave" Grid.Row="4"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+                    <Label Grid.Row="4" Grid.Column="0" Content="ログイン" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <CheckBox x:Name="ChkClearCookie" Grid.Row="4" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="終了時、ログイン状態をクリアする。" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <Button x:Name="BtnSettingSave" Grid.Row="5"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
 
                 </Grid>
             </DockPanel>

@@ -65,6 +65,7 @@ namespace MiteneLoader
         string Shared_URL;
         string Storage_Folder;
         bool useYearMonthFolder;
+        bool Login_Cookie_Clear;
 
         int DuplicateCount = 0;
         CoreWebView2DownloadOperation downloadOperation;
@@ -146,10 +147,12 @@ namespace MiteneLoader
             Shared_URL = Properties.Settings.Default.Shared_URL;
             Storage_Folder = Properties.Settings.Default.Storage_Folder;
             useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
+            Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear;
 
             TxtSharedURL.Text = Shared_URL;
             TxtFolderPath.Text = Storage_Folder;
             ChkYearMonthFolder.IsChecked = useYearMonthFolder;
+            ChkClearCookie.IsChecked = Login_Cookie_Clear;
         }
 
         private void saveSetting()
@@ -165,6 +168,8 @@ namespace MiteneLoader
             {
                 Properties.Settings.Default.SubFolder_Type = 0;
             }
+
+            Properties.Settings.Default.Login_Cookie_Clear = (bool) ChkClearCookie.IsChecked;
 
             Properties.Settings.Default.Save();
 
@@ -1303,6 +1308,14 @@ namespace MiteneLoader
                 Grid_Title.Margin = new Thickness(0, 0, 0, 0);
                 Grid_Main.Margin = new Thickness(4, 0, 4, 4);
                 Btn_Max.Content = FindResource("ImageWinStateMax");
+            }
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (Login_Cookie_Clear)
+            {
+                MiteneWebView.CoreWebView2.CookieManager.DeleteAllCookies();
             }
         }
     }
