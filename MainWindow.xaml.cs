@@ -68,16 +68,24 @@ namespace MiteneLoader
         bool useYearMonthFolder;
         bool Login_Cookie_Clear;
 
+        bool isInternetConnected = false;
+
         int DuplicateCount = 0;
         CoreWebView2DownloadOperation downloadOperation;
 
         public MainWindow()
         {
             InitializeComponent();
+            isInternetConnected = isNetworkAvailable();
+
             loadSetting();
             showBrank();
             InitMiteneTable();
-            InitAsync();
+            if (isInternetConnected)
+            {
+                InitAsync();
+            }
+            showFileBrowser();
             //後の処理は、Window_ContentRenderedイベントハンドラでPageLoading()実行する。
         }
 
@@ -86,22 +94,25 @@ namespace MiteneLoader
             bool isConfigRequired = false;
             string mess = "";
 
-
-            if (string.IsNullOrEmpty(Shared_URL))
+            if (isInternetConnected)
             {
-                isConfigRequired = true;
-                mess = "\"共有URLが設定されていません。共有URLを設定してください。";
-            }
-            else
-            {
-                try
-                {
-                    MiteneWebView.Source = new Uri(Shared_URL);
-                }
-                catch
+                if (string.IsNullOrEmpty(Shared_URL))
                 {
                     isConfigRequired = true;
-                    mess = "指定URLが開けません。設定を確認してください。";
+                    mess = "共有URLが設定されていません。共有URLを設定してください。";
+                }
+                else
+                {
+                    try
+                    {
+                        MiteneWebView.Source = new Uri(Shared_URL);
+                    }
+                    catch
+                    {
+                        isConfigRequired = true;
+                        mess = "指定URLが開けません。設定を確認してください。";
+                    }
+
                 }
 
             }
@@ -139,7 +150,17 @@ namespace MiteneLoader
                 showSetting();
                 return;
             }
-            showWebBrowser();
+            if (isInternetConnected)
+            {
+                showWebBrowser();
+            }
+            else
+            {
+                mess = "インターネットに接続していないためWebブラウザは使用できません。";
+                MessageEx.ShowWarningDialog(mess, Window.GetWindow(this));
+
+                showFileBrowser();
+            }
         }
 
 
@@ -278,8 +299,14 @@ namespace MiteneLoader
             MainPanel.Visibility = Visibility.Hidden;
             SettingPanel.Visibility = Visibility.Collapsed;
             FileBrowsePanel.Visibility = Visibility.Visible;
-
-            Menu_WebBrowse.Visibility = Visibility.Visible;
+            if (isInternetConnected)
+            {
+                Menu_WebBrowse.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Menu_WebBrowse.Visibility = Visibility.Collapsed;
+            }
             Menu_DoStart.Visibility = Visibility.Collapsed;
 
             //ここで最新の状態に更新して表示したい
@@ -308,7 +335,14 @@ namespace MiteneLoader
             SettingPanel.Visibility = Visibility.Visible;
             FileBrowsePanel.Visibility = Visibility.Collapsed;
 
-            Menu_WebBrowse.Visibility = Visibility.Visible;
+            if (isInternetConnected)
+            {
+                Menu_WebBrowse.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Menu_WebBrowse.Visibility = Visibility.Collapsed;
+            }
             Menu_DoStart.Visibility = Visibility.Collapsed;
         }
 
@@ -606,6 +640,7 @@ namespace MiteneLoader
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             PageLoading();
+
         }
 
         private void Btn_Min_Click(object sender, RoutedEventArgs e)
@@ -1379,9 +1414,38 @@ namespace MiteneLoader
         {
             //ネットワークに接続されているか調べる
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-                return true;
+            {
+                //インターネットに接続されているか確認する
+                string host = "http://www.yahoo.com";
+
+                System.Net.HttpWebRequest webreq = null;
+                System.Net.HttpWebResponse webres = null;
+                try
+                {
+                    //HttpWebRequestの作成
+                    webreq = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(host);
+                    //メソッドをHEADにする
+                    webreq.Method = "HEAD";
+                    //受信する
+                    webres = (System.Net.HttpWebResponse)webreq.GetResponse();
+                    //応答ステータスコードを表示
+                    Console.WriteLine(webres.StatusCode);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+                finally
+                {
+                    if (webres != null)
+                        webres.Close();
+                }
+            }
             else
+            {
                 return false;
+            }
         }
     }
 
