@@ -214,10 +214,13 @@ namespace MiteneLoader
             if (isMiteneDataPage)
             {
                 Menu_DoStart.Visibility = Visibility.Visible;
+                Menu_WebBrowse.Visibility = Visibility.Collapsed;
             }
             else
             {
                 Menu_DoStart.Visibility = Visibility.Collapsed;
+                Menu_WebBrowse.Visibility = Visibility.Visible;
+
             }
 
             //if (isMiteneDataPage && !inDownloadProsess && !DataReadComplete && inDataReadProsess)
@@ -248,10 +251,14 @@ namespace MiteneLoader
             if (isMiteneDataPage || isMiteneLoginPage)
             {
                 Menu_DoStart.Visibility = Visibility.Visible;
+                Menu_WebBrowse.Visibility = Visibility.Collapsed;
+
             }
             else
             {
                 Menu_DoStart.Visibility = Visibility.Collapsed;
+                Menu_WebBrowse.Visibility = Visibility.Visible;
+
             }
         }
 
@@ -260,6 +267,8 @@ namespace MiteneLoader
             MainPanel.Visibility = Visibility.Hidden;
             SettingPanel.Visibility = Visibility.Collapsed;
             FileBrowsePanel.Visibility = Visibility.Visible;
+
+            Menu_WebBrowse.Visibility = Visibility.Visible;
             Menu_DoStart.Visibility = Visibility.Collapsed;
 
         }
@@ -269,6 +278,8 @@ namespace MiteneLoader
             MainPanel.Visibility = Visibility.Hidden;
             SettingPanel.Visibility = Visibility.Visible;
             FileBrowsePanel.Visibility = Visibility.Collapsed;
+
+            Menu_WebBrowse.Visibility = Visibility.Visible;
             Menu_DoStart.Visibility = Visibility.Collapsed;
         }
 
@@ -454,6 +465,7 @@ namespace MiteneLoader
             }
             string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
             Debug.Print("MiteneWebView.DataLoad: " + count);
+            setProgressText();
         }
 
         /// <summary>
@@ -513,7 +525,15 @@ namespace MiteneLoader
             }
 
             MiteneWebView.CoreWebView2.Navigate(Shared_URL);
-            string message = progressBar.Value + "/" + progressBar.Maximum + " ファイル処理完了";
+            string message = "";
+            if (progressBar.Maximum > 0)
+            {
+                message = "処理終了しました。\n新たに " + progressBar.Maximum + "件のファイルをダウンロードしました。";
+            }
+            else
+            {
+                message = "処理終了しました。\n新たにダウンロードが必要なファイルはありませんでした。";
+            }
             MessageEx.ShowInformationDialog(message, Window.GetWindow(this));
 
             inDataReadProsess = false;
@@ -682,7 +702,7 @@ namespace MiteneLoader
         {
             if (inDataReadProsess)
             {
-                progressText.Text = "みてねデータ解析中";
+                progressText.Text = "みてねページ"+ page_count +" データ解析中 処理データ数=" + miteneData.Rows.Count.ToString();
             }
             else if (inDownloadProsess && !DataDownloadComplete)
             {

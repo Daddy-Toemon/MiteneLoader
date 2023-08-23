@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Style="{DynamicResource DefaultWindowStyle}"
 
-        Title="MainWindow" Height="450" Width="800" SizeChanged="Window_SizeChanged" ContentRendered="Window_ContentRendered">
+        Title="MainWindow" Height="600" Width="1024" SizeChanged="Window_SizeChanged" ContentRendered="Window_ContentRendered">
 
     <Window.Resources>
         <Image x:Key="ImageWinStateMax" Source="Images/Full_Window.png" Width="12" Height="12"/>
@@ -21,7 +21,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <!-- タイトルバーの UI の定義 -->
         <Grid x:Name="Grid_Title" Grid.Row="0" Height="36" Grid.ColumnSpan="2">
@@ -53,20 +53,29 @@
 
             <Menu x:Name="myMenu" Grid.Column="2"  WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,5,0,5" Height="20" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
                 <MenuItem x:Name="Menu_DoStart" Header="処理開始" Click="Menu_DoStart_Click" Visibility="Collapsed" >
-                    <MenuItem.Icon>
+                    <!--<MenuItem.Icon>
                         <Image Source="Images/Work64.png"/>
-                    </MenuItem.Icon>
+                    </MenuItem.Icon>-->
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="みてねデータの解析・ダウンロード処理を行います。"/>
+                    </MenuItem.ToolTip>
                 </MenuItem>
                 <MenuItem x:Name="Menu_WebBrowse" Header="Webブラウザ" Click="Menu_WebBrowse_Click" >
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="Webブラウザを表示します。"/>
+                    </MenuItem.ToolTip>
                 </MenuItem>
 
                 <MenuItem x:Name="Menu_FileBrowse" Header="Fileブラウザ" Click="Menu_FileBrowse_Click" >
+                    <MenuItem.ToolTip>
+                        <ToolTip Content="ダウンロードしたデータの保存先を表示します。"/>
+                    </MenuItem.ToolTip>
                 </MenuItem>
 
                 <MenuItem x:Name="Menu_Setting" Header="設定(_S)">
-                    <MenuItem.Icon>
+                    <!--<MenuItem.Icon>
                         <Image Source="Images/Settings.png"/>
-                    </MenuItem.Icon>
+                    </MenuItem.Icon>-->
                     <MenuItem x:Name="Menu_Configration" Header="システム構成(_C)" Click="Menu_Configration_Click" />
 
                     <MenuItem x:Name="Menu_Org" Header="テスト(_T)">
@@ -79,9 +88,9 @@
         </Grid>
         <Grid x:Name="Grid_Main" Grid.Row="1" Margin="4,0,4,4" Grid.ColumnSpan="2">
             <DockPanel x:Name="MainPanel" Visibility="Hidden">
-                <DockPanel x:Name="BottomPanel" LastChildFill="False" DockPanel.Dock="Bottom" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+                <DockPanel x:Name="BottomPanel" LastChildFill="False" DockPanel.Dock="Bottom" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                     <Grid>
-                        <ProgressBar x:Name="progressBar" Width="100" Height="41" Margin="5,5,0,5" Visibility="Collapsed" HorizontalAlignment="Stretch" />
+                        <ProgressBar x:Name="progressBar" Width="100" Height="28" Margin="5,5,0,5" Visibility="Collapsed" HorizontalAlignment="Stretch" />
                         <TextBox x:Name="progressText" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" BorderBrush="{x:Null}" IsEnabled="False" FontSize="16" />
                     </Grid>
                 </DockPanel>
