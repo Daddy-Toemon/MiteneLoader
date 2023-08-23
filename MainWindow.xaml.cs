@@ -1290,8 +1290,21 @@ namespace MiteneLoader
 
         }
 
-
-
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
+                Grid_Title.Margin = new Thickness(8, 8, 8, 0);
+                Grid_Main.Margin = new Thickness(12, 0, 12, 12);
+                Btn_Max.Content = FindResource("ImageWinStateNormal");
+            }
+            else
+            {
+                Grid_Title.Margin = new Thickness(0, 0, 0, 0);
+                Grid_Main.Margin = new Thickness(4, 0, 4, 4);
+                Btn_Max.Content = FindResource("ImageWinStateMax");
+            }
+        }
     }
 
     public class MiteneStruct
