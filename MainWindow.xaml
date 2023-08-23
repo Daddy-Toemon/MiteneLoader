@@ -82,7 +82,7 @@
                 <DockPanel x:Name="BottomPanel" LastChildFill="False" DockPanel.Dock="Bottom" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                     <Grid>
                         <ProgressBar x:Name="progressBar" Width="100" Height="41" Margin="5,5,0,5" Visibility="Collapsed" HorizontalAlignment="Stretch" />
-                        <TextBox x:Name="progressText" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed" Height="20" />
+                        <TextBox x:Name="progressText" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" BorderBrush="{x:Null}" IsEnabled="False" FontSize="16" />
                     </Grid>
                 </DockPanel>
                 <Wpf:WebView2 x:Name="MiteneWebView" Source="https://mitene.us/f/" Margin="0,0,5,0" />

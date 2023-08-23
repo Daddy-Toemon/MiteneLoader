@@ -54,6 +54,7 @@ namespace MiteneLoader
         string nowDownloadPath = "";
         readonly CountdownEvent condition = new CountdownEvent(1);
 
+        bool DataDownloadComplete = false;
         bool inDownloadProsess = false;
         bool DataReadComplete = false;
         bool inDataReadProsess = false;
@@ -228,11 +229,13 @@ namespace MiteneLoader
                     nextPage();
                 }
             }
-            if (!isMiteneDataPage && !isMiteneLoginPage && !inDownloadProsess && !inDataReadProsess)
+            if (!isMiteneDataPage && !isMiteneLoginPage && !inDownloadProsess && !inDataReadProsess && !DataDownloadComplete)
             {
                 MessageEx.ShowWarningDialog("みてねの共有URLではありません。正しい共有URLを設定してください。", Window.GetWindow(this));
                 showSetting();
             }
+
+            if (DataDownloadComplete) DataDownloadComplete=false;
 
         }
 
@@ -459,12 +462,9 @@ namespace MiteneLoader
         private async void doDownload()
         {
             progressBar.Visibility = Visibility.Visible;
-            progressText.Visibility = Visibility.Visible;
             progressBar.Width = this.Width - 30;
-            //string folder_path = getFoldrPath();
             inDownloadProsess = true;
             string result = "";
-            progressBar.Maximum = miteneData.Rows.Count;
 
             DataRow[] foundRows;
 
@@ -473,8 +473,9 @@ namespace MiteneLoader
 
             int download_count = foundRows.Length;
 
-            progressBar.Value = miteneData.Rows.Count - download_count;
-            progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
+            progressBar.Maximum = download_count;
+            progressBar.Value = 0;
+            setProgressText();
 
             foreach (DataRow row in foundRows)
             {
@@ -491,19 +492,19 @@ namespace MiteneLoader
                         result = "timeout";
                 });
                 progressBar.Value++;
-                progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
+                setProgressText();
+
+                //download history clear
+                ClearDownloadHistoryData();
+
 
             }
 
             if (progressBar.Value >= progressBar.Maximum)
             {
-                progressText.Text = progressBar.Value + "/" + progressBar.Maximum + " ファイル取込み完了";
                 progressBar.Visibility = Visibility.Collapsed;
             }
-            else
-            {
-                progressText.Text = progressBar.Value + "/" + progressBar.Maximum;
-            }
+            setProgressText();
 
             //MiteneWebView.CoreWebView2.
             if (MiteneWebView.CoreWebView2.IsDefaultDownloadDialogOpen)
@@ -514,14 +515,43 @@ namespace MiteneLoader
             MiteneWebView.CoreWebView2.Navigate(Shared_URL);
             string message = progressBar.Value + "/" + progressBar.Maximum + " ファイル処理完了";
             MessageEx.ShowInformationDialog(message, Window.GetWindow(this));
+
             inDataReadProsess = false;
             DataReadComplete = false;
             inDataReadProsess = false;
+            DataDownloadComplete = true;
+            inDownloadProsess = false;
 
             setAllMenuEnable(true);
+            setProgressText();
 
         }
 
+        /// <summary>
+        /// ダウンロード履歴のクリア
+        /// </summary>
+        private async void ClearDownloadHistoryData()
+        {
+            // ref https://github.com/MicrosoftEdge/WebView2Feedback/issues/2582
+
+            CoreWebView2Profile profile;
+            if (this.MiteneWebView.CoreWebView2 != null)
+            {
+                profile = this.MiteneWebView.CoreWebView2.Profile;
+                //MessageBox.Show($"{profile}");
+
+                //CoreWebView2BrowsingDataKinds dataKinds = (CoreWebView2BrowsingDataKinds)
+                //                         (CoreWebView2BrowsingDataKinds.GeneralAutofill |
+                //                      CoreWebView2BrowsingDataKinds.PasswordAutosave |
+                //                      CoreWebView2BrowsingDataKinds.AllDomStorage |
+                //                      CoreWebView2BrowsingDataKinds.DownloadHistory |
+                //                      CoreWebView2BrowsingDataKinds.BrowsingHistory);
+                CoreWebView2BrowsingDataKinds dataKinds = (CoreWebView2BrowsingDataKinds)
+                         (CoreWebView2BrowsingDataKinds.DownloadHistory);
+
+                await profile.ClearBrowsingDataAsync(dataKinds);
+            }
+        }
 
         #region Window_Event *******************************************
         private void Window_ContentRendered(object sender, EventArgs e)
@@ -638,6 +668,7 @@ namespace MiteneLoader
             FirstPage(); //最初のページへ戻してから処理する
             System.Threading.Thread.Sleep(1000);
             inDataReadProsess = true;
+            setProgressText();
             setAllMenuEnable(false);
             miteneData.Clear();
             ReadData();
@@ -646,6 +677,31 @@ namespace MiteneLoader
                 nextPage();
             }
         }
+
+        private void setProgressText()
+        {
+            if (inDataReadProsess)
+            {
+                progressText.Text = "みてねデータ解析中";
+            }
+            else if (inDownloadProsess && !DataDownloadComplete)
+            {
+                if(progressBar.Value >= progressBar.Maximum)
+                {
+                    progressText.Text = "みてねデータ " + progressBar.Value + "/" + progressBar.Maximum + " ダウンロード完了";
+                }
+                else
+                {
+                    progressText.Text = "みてねデータ " + progressBar.Value + "/" + progressBar.Maximum + " ダウンロード中";
+                }
+            }
+            else
+            {
+                progressText.Text = "";
+
+            }
+        }
+
 
         private void Menu_Configration_Click(object sender, RoutedEventArgs e)
         {
@@ -778,6 +834,7 @@ namespace MiteneLoader
             var fi = downloadOperation.ResultFilePath.ToString();
             Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_StateChanged " + state + "(" + fi + ")");
 
+           
             if (state == "Completed")
             {
                 //シグナル初期化
