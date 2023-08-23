@@ -80,7 +80,6 @@
 
                     <MenuItem x:Name="Menu_Org" Header="テスト(_T)">
                         <MenuItem x:Name="Menu_MitenePageCheck" Header="みてねページ確認" Click="Menu_MitenePageCheck_Click" />
-                        <MenuItem x:Name="Menu_CookieDelete" Header="Cookie削除" Click="Menu_CookieDelete_Click" />
                     </MenuItem>
                 </MenuItem>
             </Menu>

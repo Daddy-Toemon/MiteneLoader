@@ -682,11 +682,6 @@ namespace MiteneLoader
             }
         }
 
-        private void Menu_CookieDelete_Click(object sender, RoutedEventArgs e)
-        {
-            MiteneWebView.CoreWebView2.CookieManager.DeleteAllCookies();
-        }
-
         private void Menu_DoStart_Click(object sender, RoutedEventArgs e)
         {
             Debug.Print("MiteneWebView.inDataReadProsess:");
