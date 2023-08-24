@@ -214,7 +214,8 @@ namespace MiteneLoader
                     {
 
                         Debug.Print("MiteneWebView.Source = new Uri("+ Shared_URL + ");");
-                        MiteneWebView.Source = new Uri(Shared_URL);
+                        //MiteneWebView.Source = new Uri(Shared_URL);
+                        MiteneWebView.CoreWebView2.Navigate(Shared_URL);
                     }
                     catch
                     {
@@ -1043,7 +1044,7 @@ namespace MiteneLoader
             }
 
 
-            MiteneWebView.Source = new Uri(Shared_URL);
+//            MiteneWebView.Source = new Uri(Shared_URL);
             //MiteneWebView.na
 
             PageLoading();
@@ -1242,9 +1243,9 @@ namespace MiteneLoader
         
         private async void CoreWebView2OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            Debug.Print($"MiteneWebView.CoreWebView2.NavigationCompleted: {nameof(e.NavigationId)} = {e.NavigationId}, {nameof(e.IsSuccess)} = {e.IsSuccess}");
+            Debug.Print($"MiteneWebView.CoreWebView2.NavigationCompleted: {nameof(e.NavigationId)} = {e.NavigationId}, {nameof(e.IsSuccess)} = {e.IsSuccess}, {nameof(e.HttpStatusCode)} = {e.HttpStatusCode}, {nameof(e.WebErrorStatus)} = {e.WebErrorStatus}");
 
-            if (!e.IsSuccess) return;
+            if (!e.IsSuccess && e.HttpStatusCode == 0) return;
 
             bool isCorrectPage = await checkMitenePage();
 
