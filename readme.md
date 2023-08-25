@@ -4,8 +4,7 @@
 
 # DEMO
 
-https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/1eee2099-682c-42c3-afea-8e0db1ddaedc
-
+https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/da22046d-805a-461b-ab6d-449fe7557987
 # Features
 
 Physics_Sim_Py used [pyxel](https://github.com/kitao/pyxel) only.
