@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="MiteneLoader.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8" />
+    </startup>
+    <userSettings>
+        <MiteneLoader.Properties.Settings>
+            <setting name="Shared_URL" serializeAs="String">
+                <value>https://mitene.us/f/</value>
+            </setting>
+            <setting name="Storage_Folder" serializeAs="String">
+                <value>C:\Mitene_Data</value>
+            </setting>
+            <setting name="SubFolder_Type" serializeAs="String">
+                <value>0</value>
+            </setting>
+            <setting name="Login_Cookie_Clear" serializeAs="String">
+                <value>False</value>
+            </setting>
+        </MiteneLoader.Properties.Settings>
+    </userSettings>
+</configuration>
