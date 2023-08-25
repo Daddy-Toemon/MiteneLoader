@@ -22,8 +22,7 @@ You can feel free to enjoy making pixel art style physics simulations.
 * [Microsoft.Web.WebView2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/) (Wpf:WebView2)
 * [Microsoft-WindowsAPICodePack-Shell](https://github.com/contre/Windows-API-Code-Pack-1.1) (wfc:ExplorerBrowser)
 * [Microsoft-WindowsAPICodePack-Core](https://github.com/contre/Windows-API-Code-Pack-1.1) (wfc:ExplorerBrowser)
-* [WindowsAPICodePack-Core](https://github.com/aybe/Windows-API-Code-Pack-1.1) (CommonOpenFileDialog)
-* [WindowsAPICodePack-Shell](https://github.com/aybe/Windows-API-Code-Pack-1.1) (CommonOpenFileDialog)
+
 
 
 Environments under [Anaconda for Windows](https://www.anaconda.com/distribution/) is tested.
