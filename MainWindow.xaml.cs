@@ -51,7 +51,6 @@ namespace MiteneLoader
         // "https://mitene.us/f/bO6hd7QDdb4"
         DataTable miteneData;
         int page_count = 1;
-        string nowDownloadPath = "";
         readonly CountdownEvent condition = new CountdownEvent(1);
 
         bool DataDownloadComplete = false;
@@ -70,7 +69,6 @@ namespace MiteneLoader
 
         bool isInternetConnected = false;
 
-        int DuplicateCount = 0;
         CoreWebView2DownloadOperation downloadOperation;
 
         public MainWindow()
@@ -579,20 +577,22 @@ namespace MiteneLoader
 
             foreach (DataRow row in foundRows)
             {
+                bool ReadOK = false;
 
                 string dPage = row["downloadUrl"].ToString();
 
                 MiteneWebView.CoreWebView2.Navigate(dPage);
                 await Task.Run(() =>
                 {
-                    string result = "";
 
                     //読み込み完了まで待機
                     if (condition.Wait(600000))
-                        result = "ok";
+                        ReadOK = true;
                     else
-                        result = "timeout";
+                        ReadOK = false;
                 });
+
+                if (!ReadOK) return;
                 progressBar.Value++;
                 setProgressText();
 
