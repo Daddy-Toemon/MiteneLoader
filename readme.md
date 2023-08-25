@@ -4,12 +4,10 @@
 
 # DEMO
 
-You can learn how to making cute physics simulations (looks retro game).
 
-![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)
+https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/1eee2099-682c-42c3-afea-8e0db1ddaedc
 
-This animation is a "Cat playing on trampoline"!
-You can get basic skills for making physics simulations.
+
 
 # Features
 
