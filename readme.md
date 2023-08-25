@@ -21,10 +21,15 @@ import pyxel
 [Pyxel](https://github.com/kitao/pyxel) is a retro game engine for Python.
 You can feel free to enjoy making pixel art style physics simulations.
 
-# Requirement
+# 使用パッケージ
+このアプリの作成には以下のパッケージを利用しています。
 
-* Python 3.6.5
-* pyxel 1.0.2
+* [Microsoft.Web.WebView2](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/) (Wpf:WebView2)
+* [Microsoft-WindowsAPICodePack-Shell](https://github.com/contre/Windows-API-Code-Pack-1.1) (wfc:ExplorerBrowser)
+* [Microsoft-WindowsAPICodePack-Core](https://github.com/contre/Windows-API-Code-Pack-1.1) (wfc:ExplorerBrowser)
+* [WindowsAPICodePack-Core](https://github.com/aybe/Windows-API-Code-Pack-1.1) (CommonOpenFileDialog)
+* [WindowsAPICodePack-Shell](https://github.com/aybe/Windows-API-Code-Pack-1.1) (CommonOpenFileDialog)
+
 
 Environments under [Anaconda for Windows](https://www.anaconda.com/distribution/) is tested.
 
@@ -33,7 +38,7 @@ conda create -n pyxel pip python=3.6 Anaconda
 activate pyxel
 ```
 
-# Installation
+# インストール
 
 Install Pyxel with pip command.
 
@@ -52,19 +57,20 @@ Run "demo.py"
 python demo.py
 ```
 
-# Note
+# 備考
 
-I don't test environments under Linux and Mac.
+みてねローダは、Windows11でしか動作確認していません。
 
-# Author
+# 作者
 
-* Hayabusa
-* R&D Center
-* Twitter : https://twitter.com/Cpp_Learning
+* Toemon
 
-# License
+# ライセンス
 
-"Physics_Sim_Py" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
+Copyright (c) 2023 Toemon
+Released under the MIT license
+https://opensource.org/license/mit/ (English)
+https://licenses.opensource.jp/MIT/MIT.html (日本語)
 
 Enjoy making cute physics simulations!
 

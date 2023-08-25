@@ -1,0 +1,5 @@
+﻿Copyright (c) 2023 Toemon
+Released under the MIT license
+
+https://opensource.org/license/mit/ (English)
+https://licenses.opensource.jp/MIT/MIT.html (日本語)
