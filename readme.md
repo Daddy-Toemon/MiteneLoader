@@ -4,12 +4,7 @@
 
 # DEMO
 
-You can learn how to making cute physics simulations (looks retro game).
-
-![](https://cpp-learning.com/wp-content/uploads/2019/05/pyxel-190505-161951.gif)
-
-This animation is a "Cat playing on trampoline"!
-You can get basic skills for making physics simulations.
+https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/1eee2099-682c-42c3-afea-8e0db1ddaedc
 
 # Features
 
@@ -28,14 +23,6 @@ You can feel free to enjoy making pixel art style physics simulations.
 * [Microsoft-WindowsAPICodePack-Shell](https://github.com/contre/Windows-API-Code-Pack-1.1) (wfc:ExplorerBrowser)
 * [Microsoft-WindowsAPICodePack-Core](https://github.com/contre/Windows-API-Code-Pack-1.1) (wfc:ExplorerBrowser)
 
-
-
-Environments under [Anaconda for Windows](https://www.anaconda.com/distribution/) is tested.
-
-```bash
-conda create -n pyxel pip python=3.6 Anaconda
-activate pyxel
-```
 
 # インストール
 
