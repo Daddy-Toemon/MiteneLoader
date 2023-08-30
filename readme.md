@@ -4,7 +4,8 @@
 
 # デモ
 
-https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/da22046d-805a-461b-ab6d-449fe7557987
+
+https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/39941627-191e-4c6f-ab1d-ab71ebc10528
 
 注意　デモ動画は早送り動画です。
 
