@@ -71,5 +71,17 @@ namespace MiteneLoader.Properties {
                 this["Login_Cookie_Clear"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Finished_Page_Cancel {
+            get {
+                return ((bool)(this["Finished_Page_Cancel"]));
+            }
+            set {
+                this["Finished_Page_Cancel"] = value;
+            }
+        }
     }
 }

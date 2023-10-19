@@ -97,7 +97,7 @@
 
             </DockPanel>
             
-            <DockPanel x:Name="SettingPanel" Visibility="Collapsed">
+            <DockPanel x:Name="SettingPanel">
                 <Grid Margin="15,5,15,15">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120"/>
@@ -106,6 +106,7 @@
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
@@ -130,7 +131,10 @@
                     <Label Grid.Row="4" Grid.Column="0" Content="ログイン" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
                     <CheckBox x:Name="ChkClearCookie" Grid.Row="4" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="終了時、ログイン状態をクリアする。" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-                    <Button x:Name="BtnSettingSave" Grid.Row="5"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+                    <Label Grid.Row="5" Grid.Column="0" Content="処理方法" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <CheckBox x:Name="ChkFinishedPage" Grid.Row="5" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="保存済みページ以降の確認を行わない" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <Button x:Name="BtnSettingSave" Grid.Row="6"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
 
                 </Grid>
             </DockPanel>

@@ -66,6 +66,7 @@ namespace MiteneLoader
         string Storage_Folder;
         bool useYearMonthFolder;
         bool Login_Cookie_Clear;
+        bool Finished_Page_Cancel;
 
         bool isInternetConnected = false;
 
@@ -512,6 +513,7 @@ namespace MiteneLoader
             System.IO.StringReader rs = new System.IO.StringReader(src);
 
             int line_count = 0;
+            int exist_count = 0;
             while (rs.Peek() > -1)
             {
                 //一行読み込んで表示する
@@ -521,6 +523,7 @@ namespace MiteneLoader
                     Array.Resize(ref lines, lines.Length + 1);
                     MiteneStruct data = new MiteneStruct(line);
                     DataRow dr = miteneData.NewRow();
+                    bool exist = false;
                     dr["id"] = data.id;
                     dr["uuid"] = data.uuid;
                     dr["userId"] = data.userId;
@@ -545,14 +548,28 @@ namespace MiteneLoader
                     dr["expiringUrl"] = data.expiringUrl;
                     dr["expiringVideoUrl"] = data.expiringVideoUrl;
                     dr["downloadUrl"] = this.Shared_URL + "/media_files/" + data.uuid + "/download";
-                    dr["fileExist"] = FileExistCheckPath(data.uuid, dr["tookAt"].ToString());
+                    exist = FileExistCheckPath(data.uuid, dr["tookAt"].ToString());
+                    dr["fileExist"] = exist;
                     miteneData.Rows.Add(dr);
                     line_count++;
+                    if(exist == true) exist_count++;
                 }
             }
             string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
             Debug.Print("MiteneWebView.DataLoad: " + count);
             setProgressText();
+
+            if (line_count > 0 &&line_count == exist_count)
+            {
+                if (Finished_Page_Cancel)
+                {
+                    inDataReadProsess = false;
+                    DataReadComplete = true;
+                    doDownload();
+                    return;
+                }
+            }
+
         }
 
         /// <summary>
@@ -709,11 +726,13 @@ namespace MiteneLoader
             Storage_Folder = Properties.Settings.Default.Storage_Folder;
             useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
             Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear;
+            Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel;
 
             TxtSharedURL.Text = Shared_URL;
             TxtFolderPath.Text = Storage_Folder;
             ChkYearMonthFolder.IsChecked = useYearMonthFolder;
             ChkClearCookie.IsChecked = Login_Cookie_Clear;
+            ChkFinishedPage.IsChecked = Finished_Page_Cancel;
         }
 
         /// <summary>
@@ -734,12 +753,15 @@ namespace MiteneLoader
             }
 
             Properties.Settings.Default.Login_Cookie_Clear = (bool)ChkClearCookie.IsChecked;
+            Properties.Settings.Default.Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked;
+
             Properties.Settings.Default.Save();
 
             Shared_URL = Properties.Settings.Default.Shared_URL;
             Storage_Folder = Properties.Settings.Default.Storage_Folder;
             useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
             Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear;
+            Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel;
 
         }
 
