@@ -72,6 +72,7 @@ namespace MiteneLoader
         bool Finished_Page_Cancel;
 
         bool isInternetConnected = false;
+        bool initOK = false;
 
         CoreWebView2DownloadOperation downloadOperation;
 
@@ -92,6 +93,9 @@ namespace MiteneLoader
             {
                 showFileBrowser();
             }
+
+            initOK = true;
+
         }
 
 
@@ -1682,7 +1686,9 @@ namespace MiteneLoader
 
         private void CmbUser_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!initOK) return;
             UserSettingLoad(CmbUser.SelectedIndex);
+            PageLoading();
         }
     }
 
