@@ -743,6 +743,7 @@ namespace MiteneLoader
             CmbUser.Items.Add(Properties.Settings.Default.Name_2);
             CmbUser.Items.Add(Properties.Settings.Default.Name_3);
             CmbUser.Items.Add(Properties.Settings.Default.Name_4);
+            CmbUser.SelectedIndex = Select_User;
         }
 
         /// <summary>
@@ -816,6 +817,8 @@ namespace MiteneLoader
             ChkYearMonthFolder.IsChecked = useYearMonthFolder;
             ChkClearCookie.IsChecked = Login_Cookie_Clear;
             ChkFinishedPage.IsChecked = Finished_Page_Cancel;
+
+            Title.Content = "みてねローダー " + Select_Name;
         }
 
         /// <summary>
@@ -826,6 +829,7 @@ namespace MiteneLoader
             int select_user = (int)CmbUser.SelectedIndex;
             int sub_folder_type;
 
+            Select_User = select_user;
             Select_Name = TxtName.Text;
             Password = TxtPass.Text;
             Shared_URL = TxtSharedURL.Text;
