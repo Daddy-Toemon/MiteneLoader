@@ -25,62 +25,438 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
-        public string Shared_URL {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int User_Num {
             get {
-                return ((string)(this["Shared_URL"]));
+                return ((int)(this["User_Num"]));
             }
             set {
-                this["Shared_URL"] = value;
+                this["User_Num"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("User_0")]
+        public string Name_0 {
+            get {
+                return ((string)(this["Name_0"]));
+            }
+            set {
+                this["Name_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("User_1")]
+        public string Name_1 {
+            get {
+                return ((string)(this["Name_1"]));
+            }
+            set {
+                this["Name_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("User_2")]
+        public string Name_2 {
+            get {
+                return ((string)(this["Name_2"]));
+            }
+            set {
+                this["Name_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("User_3")]
+        public string Name_3 {
+            get {
+                return ((string)(this["Name_3"]));
+            }
+            set {
+                this["Name_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("User_4")]
+        public string Name_4 {
+            get {
+                return ((string)(this["Name_4"]));
+            }
+            set {
+                this["Name_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password_0 {
+            get {
+                return ((string)(this["Password_0"]));
+            }
+            set {
+                this["Password_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password_1 {
+            get {
+                return ((string)(this["Password_1"]));
+            }
+            set {
+                this["Password_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password_2 {
+            get {
+                return ((string)(this["Password_2"]));
+            }
+            set {
+                this["Password_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password_3 {
+            get {
+                return ((string)(this["Password_3"]));
+            }
+            set {
+                this["Password_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password_4 {
+            get {
+                return ((string)(this["Password_4"]));
+            }
+            set {
+                this["Password_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
+        public string Shared_URL_0 {
+            get {
+                return ((string)(this["Shared_URL_0"]));
+            }
+            set {
+                this["Shared_URL_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
+        public string Shared_URL_1 {
+            get {
+                return ((string)(this["Shared_URL_1"]));
+            }
+            set {
+                this["Shared_URL_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
+        public string Shared_URL_2 {
+            get {
+                return ((string)(this["Shared_URL_2"]));
+            }
+            set {
+                this["Shared_URL_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
+        public string Shared_URL_3 {
+            get {
+                return ((string)(this["Shared_URL_3"]));
+            }
+            set {
+                this["Shared_URL_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://mitene.us/f/")]
+        public string Shared_URL_4 {
+            get {
+                return ((string)(this["Shared_URL_4"]));
+            }
+            set {
+                this["Shared_URL_4"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\Mitene_Data")]
-        public string Storage_Folder {
+        public string Storage_Folder_0 {
             get {
-                return ((string)(this["Storage_Folder"]));
+                return ((string)(this["Storage_Folder_0"]));
             }
             set {
-                this["Storage_Folder"] = value;
+                this["Storage_Folder_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Mitene_Data")]
+        public string Storage_Folder_1 {
+            get {
+                return ((string)(this["Storage_Folder_1"]));
+            }
+            set {
+                this["Storage_Folder_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Mitene_Data")]
+        public string Storage_Folder_2 {
+            get {
+                return ((string)(this["Storage_Folder_2"]));
+            }
+            set {
+                this["Storage_Folder_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Mitene_Data")]
+        public string Storage_Folder_3 {
+            get {
+                return ((string)(this["Storage_Folder_3"]));
+            }
+            set {
+                this["Storage_Folder_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Mitene_Data")]
+        public string Storage_Folder_4 {
+            get {
+                return ((string)(this["Storage_Folder_4"]));
+            }
+            set {
+                this["Storage_Folder_4"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SubFolder_Type {
+        public int SubFolder_Type_0 {
             get {
-                return ((int)(this["SubFolder_Type"]));
+                return ((int)(this["SubFolder_Type_0"]));
             }
             set {
-                this["SubFolder_Type"] = value;
+                this["SubFolder_Type_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SubFolder_Type_1 {
+            get {
+                return ((int)(this["SubFolder_Type_1"]));
+            }
+            set {
+                this["SubFolder_Type_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SubFolder_Type_2 {
+            get {
+                return ((int)(this["SubFolder_Type_2"]));
+            }
+            set {
+                this["SubFolder_Type_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SubFolder_Type_3 {
+            get {
+                return ((int)(this["SubFolder_Type_3"]));
+            }
+            set {
+                this["SubFolder_Type_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SubFolder_Type_4 {
+            get {
+                return ((int)(this["SubFolder_Type_4"]));
+            }
+            set {
+                this["SubFolder_Type_4"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Login_Cookie_Clear {
+        public bool Login_Cookie_Clear_0 {
             get {
-                return ((bool)(this["Login_Cookie_Clear"]));
+                return ((bool)(this["Login_Cookie_Clear_0"]));
             }
             set {
-                this["Login_Cookie_Clear"] = value;
+                this["Login_Cookie_Clear_0"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Finished_Page_Cancel {
+        public bool Login_Cookie_Clear_1 {
             get {
-                return ((bool)(this["Finished_Page_Cancel"]));
+                return ((bool)(this["Login_Cookie_Clear_1"]));
             }
             set {
-                this["Finished_Page_Cancel"] = value;
+                this["Login_Cookie_Clear_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Login_Cookie_Clear_2 {
+            get {
+                return ((bool)(this["Login_Cookie_Clear_2"]));
+            }
+            set {
+                this["Login_Cookie_Clear_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Login_Cookie_Clear_3 {
+            get {
+                return ((bool)(this["Login_Cookie_Clear_3"]));
+            }
+            set {
+                this["Login_Cookie_Clear_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Login_Cookie_Clear_4 {
+            get {
+                return ((bool)(this["Login_Cookie_Clear_4"]));
+            }
+            set {
+                this["Login_Cookie_Clear_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Finished_Page_Cancel_0 {
+            get {
+                return ((bool)(this["Finished_Page_Cancel_0"]));
+            }
+            set {
+                this["Finished_Page_Cancel_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Finished_Page_Cancel_1 {
+            get {
+                return ((bool)(this["Finished_Page_Cancel_1"]));
+            }
+            set {
+                this["Finished_Page_Cancel_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Finished_Page_Cancel_2 {
+            get {
+                return ((bool)(this["Finished_Page_Cancel_2"]));
+            }
+            set {
+                this["Finished_Page_Cancel_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Finished_Page_Cancel_3 {
+            get {
+                return ((bool)(this["Finished_Page_Cancel_3"]));
+            }
+            set {
+                this["Finished_Page_Cancel_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Finished_Page_Cancel_4 {
+            get {
+                return ((bool)(this["Finished_Page_Cancel_4"]));
+            }
+            set {
+                this["Finished_Page_Cancel_4"] = value;
             }
         }
     }

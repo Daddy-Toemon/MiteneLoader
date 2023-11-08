@@ -62,8 +62,11 @@ namespace MiteneLoader
         bool isMiteneLoginPage = false;
         bool isMitenePage = false;
 
+        int Select_User= 0;
+        string Select_Name;
         string Shared_URL;
         string Storage_Folder;
+        string Password;
         bool useYearMonthFolder;
         bool Login_Cookie_Clear;
         bool Finished_Page_Cancel;
@@ -722,12 +725,92 @@ namespace MiteneLoader
         /// </summary>
         private void loadSetting()
         {
-            Shared_URL = Properties.Settings.Default.Shared_URL;
-            Storage_Folder = Properties.Settings.Default.Storage_Folder;
-            useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
-            Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear;
-            Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel;
+            initCmbUser();
+            Select_User = Properties.Settings.Default.User_Num;
 
+            UserSettingLoad(Select_User);
+        }
+
+        /// <summary>
+        /// ユーザー選択コンボを初期化。
+        /// </summary>
+
+        private void initCmbUser()
+        {
+            CmbUser.Items.Clear();
+            CmbUser.Items.Add(Properties.Settings.Default.Name_0);
+            CmbUser.Items.Add(Properties.Settings.Default.Name_1);
+            CmbUser.Items.Add(Properties.Settings.Default.Name_2);
+            CmbUser.Items.Add(Properties.Settings.Default.Name_3);
+            CmbUser.Items.Add(Properties.Settings.Default.Name_4);
+        }
+
+        /// <summary>
+        /// ユーザー毎のSetting情報を読み込みます。
+        /// </summary>
+
+        private void UserSettingLoad(int select_User)
+        {
+            switch (select_User)
+            {
+                case 0:
+                    Select_Name = Properties.Settings.Default.Name_0;
+                    Password = Properties.Settings.Default.Password_0;
+                    Shared_URL = Properties.Settings.Default.Shared_URL_0;
+                    Storage_Folder = Properties.Settings.Default.Storage_Folder_0;
+                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_0 == 1);
+                    Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_0;
+                    Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_0;
+                    break;
+                case 1:
+                    Select_Name = Properties.Settings.Default.Name_1;
+                    Password = Properties.Settings.Default.Password_1;
+                    Shared_URL = Properties.Settings.Default.Shared_URL_1;
+                    Storage_Folder = Properties.Settings.Default.Storage_Folder_1;
+                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_1 == 1);
+                    Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_1;
+                    Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_1;
+                    break;
+                case 2:
+                    Select_Name = Properties.Settings.Default.Name_2;
+                    Password = Properties.Settings.Default.Password_2;
+                    Shared_URL = Properties.Settings.Default.Shared_URL_2;
+                    Storage_Folder = Properties.Settings.Default.Storage_Folder_2;
+                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_2 == 1);
+                    Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_2;
+                    Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_2;
+                    break;
+                case 3:
+                    Select_Name = Properties.Settings.Default.Name_3;
+                    Password = Properties.Settings.Default.Password_3;
+                    Shared_URL = Properties.Settings.Default.Shared_URL_3;
+                    Storage_Folder = Properties.Settings.Default.Storage_Folder_3;
+                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_3 == 1);
+                    Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_3;
+                    Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_3;
+                    break;
+                case 4:
+                    Select_Name = Properties.Settings.Default.Name_4;
+                    Password = Properties.Settings.Default.Password_4;
+                    Shared_URL = Properties.Settings.Default.Shared_URL_4;
+                    Storage_Folder = Properties.Settings.Default.Storage_Folder_4;
+                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_4 == 1);
+                    Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_4;
+                    Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_4;
+                    break;
+                default:
+                    Select_Name = Properties.Settings.Default.Name_0;
+                    Password = Properties.Settings.Default.Password_0;
+                    Shared_URL = Properties.Settings.Default.Shared_URL_0;
+                    Storage_Folder = Properties.Settings.Default.Storage_Folder_0;
+                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_0 == 1);
+                    Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_0;
+                    Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_0;
+                    break;
+            }
+            CmbUser.SelectedValue =
+            TxtName.Text = Select_Name;
+            TxtPass.Text = Password;
             TxtSharedURL.Text = Shared_URL;
             TxtFolderPath.Text = Storage_Folder;
             ChkYearMonthFolder.IsChecked = useYearMonthFolder;
@@ -740,29 +823,86 @@ namespace MiteneLoader
         /// </summary>
         private void saveSetting()
         {
-            Properties.Settings.Default.Shared_URL = TxtSharedURL.Text;
-            Properties.Settings.Default.Storage_Folder = TxtFolderPath.Text;
+            int select_user = (int)CmbUser.SelectedIndex;
+            int sub_folder_type;
 
-            if ((bool)ChkYearMonthFolder.IsChecked)
+            Select_Name = TxtName.Text;
+            Password = TxtPass.Text;
+            Shared_URL = TxtSharedURL.Text;
+            Storage_Folder = TxtFolderPath.Text;
+            useYearMonthFolder = (bool)ChkYearMonthFolder.IsChecked;
+            if (useYearMonthFolder)
             {
-                Properties.Settings.Default.SubFolder_Type = 1;
+                sub_folder_type = 1;
             }
             else
             {
-                Properties.Settings.Default.SubFolder_Type = 0;
+                sub_folder_type = 0;
             }
+            Login_Cookie_Clear = (bool)ChkClearCookie.IsChecked;
+            Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked;
 
-            Properties.Settings.Default.Login_Cookie_Clear = (bool)ChkClearCookie.IsChecked;
-            Properties.Settings.Default.Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked;
-
+            switch (select_user)
+            {
+                case 0:
+                    Properties.Settings.Default.Name_0 = Select_Name;
+                    Properties.Settings.Default.Password_0 = Password;
+                    Properties.Settings.Default.Shared_URL_0 = Shared_URL;
+                    Properties.Settings.Default.Storage_Folder_0 = Storage_Folder;
+                    Properties.Settings.Default.SubFolder_Type_0 = sub_folder_type;
+                    Properties.Settings.Default.Login_Cookie_Clear_0 = Login_Cookie_Clear;
+                    Properties.Settings.Default.Finished_Page_Cancel_0 = Finished_Page_Cancel;
+                    break;
+                case 1:
+                    Properties.Settings.Default.Name_1 = Select_Name;
+                    Properties.Settings.Default.Password_1 = Password;
+                    Properties.Settings.Default.Shared_URL_1 = Shared_URL;
+                    Properties.Settings.Default.Storage_Folder_1 = Storage_Folder;
+                    Properties.Settings.Default.SubFolder_Type_1 = sub_folder_type;
+                    Properties.Settings.Default.Login_Cookie_Clear_1 = Login_Cookie_Clear;
+                    Properties.Settings.Default.Finished_Page_Cancel_1 = Finished_Page_Cancel;
+                    break;
+                case 2:
+                    Properties.Settings.Default.Name_2 = Select_Name;
+                    Properties.Settings.Default.Password_2 = Password;
+                    Properties.Settings.Default.Shared_URL_2 = Shared_URL;
+                    Properties.Settings.Default.Storage_Folder_2 = Storage_Folder;
+                    Properties.Settings.Default.SubFolder_Type_2 = sub_folder_type;
+                    Properties.Settings.Default.Login_Cookie_Clear_2 = Login_Cookie_Clear;
+                    Properties.Settings.Default.Finished_Page_Cancel_2 = Finished_Page_Cancel;
+                    break;
+                case 3:
+                    Properties.Settings.Default.Name_3 = Select_Name;
+                    Properties.Settings.Default.Password_3 = Password;
+                    Properties.Settings.Default.Shared_URL_3 = Shared_URL;
+                    Properties.Settings.Default.Storage_Folder_3 = Storage_Folder;
+                    Properties.Settings.Default.SubFolder_Type_3 = sub_folder_type;
+                    Properties.Settings.Default.Login_Cookie_Clear_3 = Login_Cookie_Clear;
+                    Properties.Settings.Default.Finished_Page_Cancel_3 = Finished_Page_Cancel;
+                    break;
+                case 4:
+                    Properties.Settings.Default.Name_4 = Select_Name;
+                    Properties.Settings.Default.Password_4 = Password;
+                    Properties.Settings.Default.Shared_URL_4 = Shared_URL;
+                    Properties.Settings.Default.Storage_Folder_4 = Storage_Folder;
+                    Properties.Settings.Default.SubFolder_Type_4 = sub_folder_type;
+                    Properties.Settings.Default.Login_Cookie_Clear_4 = Login_Cookie_Clear;
+                    Properties.Settings.Default.Finished_Page_Cancel_4 = Finished_Page_Cancel;
+                    break;
+                default:
+                    Properties.Settings.Default.Name_0 = Select_Name;
+                    Properties.Settings.Default.Password_0 = Password;
+                    Properties.Settings.Default.Shared_URL_0 = Shared_URL;
+                    Properties.Settings.Default.Storage_Folder_0 = Storage_Folder;
+                    Properties.Settings.Default.SubFolder_Type_0 = sub_folder_type;
+                    Properties.Settings.Default.Login_Cookie_Clear_0 = Login_Cookie_Clear;
+                    Properties.Settings.Default.Finished_Page_Cancel_0 = Finished_Page_Cancel;
+                    break;
+            }
+            Properties.Settings.Default.User_Num = select_user;
             Properties.Settings.Default.Save();
 
-            Shared_URL = Properties.Settings.Default.Shared_URL;
-            Storage_Folder = Properties.Settings.Default.Storage_Folder;
-            useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type == 1);
-            Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear;
-            Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel;
-
+            initCmbUser();
         }
 
         #endregion
@@ -1535,6 +1675,11 @@ namespace MiteneLoader
             Debug.Print($"MiteneWebView.CoreWebView2.WindowCloseRequested:");
         }
         #endregion
+
+        private void CmbUser_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UserSettingLoad(CmbUser.SelectedIndex);
+        }
     }
 
     public class MiteneStruct

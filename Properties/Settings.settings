@@ -2,19 +2,112 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MiteneLoader.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Shared_URL" Type="(Web Service URL)" Scope="User">
-      <Value Profile="(Default)">https://mitene.us/f/</Value>
-    </Setting>
-    <Setting Name="Storage_Folder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Mitene_Data</Value>
-    </Setting>
-    <Setting Name="SubFolder_Type" Type="System.Int32" Scope="User">
+    <Setting Name="User_Num" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="Login_Cookie_Clear" Type="System.Boolean" Scope="User">
+    <Setting Name="Name_0" Type="System.String" Scope="User">
+      <Value Profile="(Default)">User_0</Value>
+    </Setting>
+    <Setting Name="Name_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">User_1</Value>
+    </Setting>
+    <Setting Name="Name_2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">User_2</Value>
+    </Setting>
+    <Setting Name="Name_3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">User_3</Value>
+    </Setting>
+    <Setting Name="Name_4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">User_4</Value>
+    </Setting>
+    <Setting Name="Password_0" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Password_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Password_2" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Password_3" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Password_4" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Shared_URL_0" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">https://mitene.us/f/</Value>
+    </Setting>
+    <Setting Name="Shared_URL_1" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">https://mitene.us/f/</Value>
+    </Setting>
+    <Setting Name="Shared_URL_2" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">https://mitene.us/f/</Value>
+    </Setting>
+    <Setting Name="Shared_URL_3" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">https://mitene.us/f/</Value>
+    </Setting>
+    <Setting Name="Shared_URL_4" Type="(Web Service URL)" Scope="User">
+      <Value Profile="(Default)">https://mitene.us/f/</Value>
+    </Setting>
+    <Setting Name="Storage_Folder_0" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Mitene_Data</Value>
+    </Setting>
+    <Setting Name="Storage_Folder_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Mitene_Data</Value>
+    </Setting>
+    <Setting Name="Storage_Folder_2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Mitene_Data</Value>
+    </Setting>
+    <Setting Name="Storage_Folder_3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Mitene_Data</Value>
+    </Setting>
+    <Setting Name="Storage_Folder_4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Mitene_Data</Value>
+    </Setting>
+    <Setting Name="SubFolder_Type_0" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SubFolder_Type_1" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SubFolder_Type_2" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SubFolder_Type_3" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SubFolder_Type_4" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Login_Cookie_Clear_0" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Finished_Page_Cancel" Type="System.Boolean" Scope="User">
+    <Setting Name="Login_Cookie_Clear_1" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Login_Cookie_Clear_2" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Login_Cookie_Clear_3" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Login_Cookie_Clear_4" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Finished_Page_Cancel_0" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Finished_Page_Cancel_1" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Finished_Page_Cancel_2" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Finished_Page_Cancel_3" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Finished_Page_Cancel_4" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

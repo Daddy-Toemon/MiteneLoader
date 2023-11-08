@@ -112,29 +112,37 @@
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
 
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" Content="設定項目" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
-                    <Label Grid.Row="0" Grid.Column="2" Content="設定内容" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
 
-                    <Label Grid.Row="1" Grid.Column="0" Content="共有URL" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                    <TextBox x:Name="TxtSharedURL" Grid.Row="1" Grid.Column="2" Text="https://mitene.us/f/bO6hd7QDdb4" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" Grid.ColumnSpan="2" />
+                    <Label Grid.Row="0" Grid.Column="0" Content="設定選択" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+                    <ComboBox x:Name="CmbUser" Grid.Row="0" Grid.Column="2" Height="30" VerticalAlignment="Center" Width="200" HorizontalAlignment="Left" SelectionChanged="CmbUser_SelectionChanged"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="設定名称" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+                    <TextBox x:Name="TxtName" Grid.Row="1" Grid.Column="2" Text="User Name" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" Grid.ColumnSpan="2" Width="200" HorizontalAlignment="Left" />
 
-                    <Label Grid.Row="2" Grid.Column="0" Content="保存フォルダー" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                    <TextBox x:Name="TxtFolderPath" Grid.Row="2" Grid.Column="2"  FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" />
-                    <Button x:Name="BtnFolder" Grid.Row="2" Grid.Column="3" Content="..." Height="30" Click="BtnFolder_Click"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="パスワード" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+                    <TextBox x:Name="TxtPass" Grid.Row="2" Grid.Column="2" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" Grid.ColumnSpan="2" />
 
-                    <Label Grid.Row="3" Grid.Column="0" Content="フォルダー構成" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                    <CheckBox x:Name="ChkYearMonthFolder" Grid.Row="3" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="年・月フォルダーに分ける" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <Label Grid.Row="3" Grid.Column="0" Content="共有URL" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <TextBox x:Name="TxtSharedURL" Grid.Row="3" Grid.Column="2" Text="https://mitene.us/f/bO6hd7QDdb4" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" Grid.ColumnSpan="2" />
 
-                    <Label Grid.Row="4" Grid.Column="0" Content="ログイン" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                    <CheckBox x:Name="ChkClearCookie" Grid.Row="4" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="終了時、ログイン状態をクリアする。" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <Label Grid.Row="4" Grid.Column="0" Content="保存フォルダー" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <TextBox x:Name="TxtFolderPath" Grid.Row="4" Grid.Column="2"  FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Height="30" />
+                    <Button x:Name="BtnFolder" Grid.Row="4" Grid.Column="3" Content="..." Height="30" Click="BtnFolder_Click"/>
 
-                    <Label Grid.Row="5" Grid.Column="0" Content="処理方法" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
-                    <CheckBox x:Name="ChkFinishedPage" Grid.Row="5" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="保存済みページ以降の確認を行わない" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <Label Grid.Row="5" Grid.Column="0" Content="フォルダー構成" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <CheckBox x:Name="ChkYearMonthFolder" Grid.Row="5" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="年・月フォルダーに分ける" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
-                    <Button x:Name="BtnSettingSave" Grid.Row="6"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+                    <Label Grid.Row="6" Grid.Column="0" Content="ログイン" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <CheckBox x:Name="ChkClearCookie" Grid.Row="6" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="終了時、ログイン状態をクリアする。" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <Label Grid.Row="7" Grid.Column="0" Content="処理方法" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                    <CheckBox x:Name="ChkFinishedPage" Grid.Row="7" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="保存済みページ以降の確認を行わない" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                    <Button x:Name="BtnSettingSave" Grid.Row="8"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
 
                 </Grid>
             </DockPanel>
