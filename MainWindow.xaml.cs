@@ -1701,7 +1701,7 @@ namespace MiteneLoader
             string fullPath;
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.FileName = "user.config";
+                sfd.FileName = "mitene.config";
                 sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 sfd.Filter = "設定ファイル(*.config)|*.config";
                 sfd.FilterIndex = 1;
@@ -1745,7 +1745,7 @@ namespace MiteneLoader
             string exportfilefullPath = "";
             using (var ofd = new OpenFileDialog())
             {
-                ofd.FileName = "user.config";
+                ofd.FileName = "mitene.config";
                 ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
                 ofd.Filter = "設定ファイル(*.config)|*.config";
                 ofd.FilterIndex = 1;
