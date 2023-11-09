@@ -96,7 +96,7 @@
                 <Wpf:WebView2 x:Name="MiteneWebView" Source="https://mitene.us/f/" Margin="0,0,5,0" />
 
             </DockPanel>
-            
+
             <DockPanel x:Name="SettingPanel">
                 <Grid Margin="15,5,15,15">
                     <Grid.ColumnDefinitions>
@@ -143,6 +143,8 @@
                     <CheckBox x:Name="ChkFinishedPage" Grid.Row="7" Grid.Column="2" FontSize="16" FontWeight="Bold" Content="保存済みページ以降の確認を行わない" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
                     <Button x:Name="BtnSettingSave" Grid.Row="8"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+                    <Button x:Name="BtnSettingExport" Grid.Row="8"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定のエクスポート" Click="BtnSettingExport_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="0,0,150,0" />
+                    <Button x:Name="BtnSettingInport" Grid.Row="8"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定のインポート" Click="BtnSettingInport_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,260,0" />
 
                 </Grid>
             </DockPanel>
@@ -152,7 +154,7 @@
                     <wfc:ExplorerBrowser x:Name="FileBrowser" />
                 </WindowsFormsHost>
             </DockPanel>
-            
+
 
         </Grid>
 

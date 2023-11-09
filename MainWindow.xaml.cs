@@ -40,6 +40,9 @@ using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.Drawing;
 using System.Net.NetworkInformation;
+using MiteneLoader.Properties;
+using System.Configuration;
+using System.Windows.Forms;
 
 namespace MiteneLoader
 {
@@ -62,7 +65,7 @@ namespace MiteneLoader
         bool isMiteneLoginPage = false;
         bool isMitenePage = false;
 
-        int Select_User= 0;
+        int Select_User = 0;
         string Select_Name;
         string Shared_URL;
         string Storage_Folder;
@@ -219,7 +222,7 @@ namespace MiteneLoader
                     try
                     {
 
-                        Debug.Print("MiteneWebView.Source = new Uri("+ Shared_URL + ");");
+                        Debug.Print("MiteneWebView.Source = new Uri(" + Shared_URL + ");");
                         //MiteneWebView.Source = new Uri(Shared_URL);
                         MiteneWebView.CoreWebView2.Navigate(Shared_URL);
                     }
@@ -559,14 +562,14 @@ namespace MiteneLoader
                     dr["fileExist"] = exist;
                     miteneData.Rows.Add(dr);
                     line_count++;
-                    if(exist == true) exist_count++;
+                    if (exist == true) exist_count++;
                 }
             }
             string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
             Debug.Print("MiteneWebView.DataLoad: " + count);
             setProgressText();
 
-            if (line_count > 0 &&line_count == exist_count)
+            if (line_count > 0 && line_count == exist_count)
             {
                 if (Finished_Page_Cancel)
                 {
@@ -723,7 +726,7 @@ namespace MiteneLoader
         }
 
         #region User Setting Read Write *******************************************
- 
+
         /// <summary>
         /// ユーザー毎のSetting情報を読み込みます。
         /// </summary>
@@ -910,7 +913,6 @@ namespace MiteneLoader
             Properties.Settings.Default.User_Num = select_user;
             Properties.Settings.Default.Save();
 
-            initCmbUser();
         }
 
         #endregion
@@ -1214,8 +1216,9 @@ namespace MiteneLoader
             }
 
 
-//            MiteneWebView.Source = new Uri(Shared_URL);
+            //            MiteneWebView.Source = new Uri(Shared_URL);
             //MiteneWebView.na
+            initCmbUser();
 
             PageLoading();
         }
@@ -1291,11 +1294,11 @@ namespace MiteneLoader
         {
             if (inDataReadProsess)
             {
-                progressText.Text = "みてねページ"+ page_count +" データ解析中 処理データ数=" + miteneData.Rows.Count.ToString();
+                progressText.Text = "みてねページ" + page_count + " データ解析中 処理データ数=" + miteneData.Rows.Count.ToString();
             }
             else if (inDownloadProsess && !DataDownloadComplete)
             {
-                if(progressBar.Value >= progressBar.Maximum)
+                if (progressBar.Value >= progressBar.Maximum)
                 {
                     progressText.Text = "みてねデータ " + progressBar.Value + "/" + progressBar.Maximum + " ダウンロード完了";
                 }
@@ -1410,7 +1413,7 @@ namespace MiteneLoader
 
         // MiteneWebView.CoreWebView2
 
-        
+
         private async void CoreWebView2OnNavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             Debug.Print($"MiteneWebView.CoreWebView2.NavigationCompleted: {nameof(e.NavigationId)} = {e.NavigationId}, {nameof(e.IsSuccess)} = {e.IsSuccess}, {nameof(e.HttpStatusCode)} = {e.HttpStatusCode}, {nameof(e.WebErrorStatus)} = {e.WebErrorStatus}");
@@ -1480,7 +1483,7 @@ namespace MiteneLoader
         #endregion
         //
         #region DownloadOperation_Event **************************************
- 
+
         // Ref https://stackoverflow.com/questions/67537998/webview2-download-progress
 
         private void DownloadOperation_EstimatedEndTimeChanged(object sender, object e)
@@ -1504,7 +1507,7 @@ namespace MiteneLoader
             var fi = downloadOperation.ResultFilePath.ToString();
             Debug.Print("MiteneWebView.CoreWebView2.DownloadOperation_StateChanged " + state + "(" + fi + ")");
 
-           
+
             if (state == "Completed")
             {
                 //シグナル初期化
@@ -1690,7 +1693,100 @@ namespace MiteneLoader
             UserSettingLoad(CmbUser.SelectedIndex);
             PageLoading();
         }
+
+        private void BtnSettingExport_Click(object sender, RoutedEventArgs e)
+        {
+            // ref https://qiita.com/minoru-nagasawa/items/7d173274b4468fd9629a
+            // ファイルを選択
+            string fullPath;
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.FileName = "user.config";
+                sfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                sfd.Filter = "設定ファイル(*.config)|*.config";
+                sfd.FilterIndex = 1;
+                sfd.Title = "エクスポート先のファイルを選択してください";
+                sfd.RestoreDirectory = true;
+                if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                fullPath = sfd.FileName;
+            }
+
+            // ファイルをコピー
+            try
+            {
+                // user.configのパスを取得
+                string userConfigPath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+
+                // ファイルが無ければSave()して生成する
+                if (!System.IO.File.Exists(userConfigPath))
+                {
+                    Settings.Default.Save();
+                }
+
+                // エクスポートはファイルをコピーするだけ
+                System.IO.File.Copy(userConfigPath, fullPath, true);
+                MessageEx.ShowInformationDialog("エクスポートしました", Window.GetWindow(this));
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show().Show(ex.ToString(), "エクスポート失敗", MessageBoxButtons.OK);
+                string message = ex.Message + "\nエクスポート失敗";
+                MessageEx.ShowErrorDialog(message, Window.GetWindow(this));
+            }
+        }
+
+        private void BtnSettingInport_Click(object sender, RoutedEventArgs e)
+        {
+            // ファイル選択
+            string exportfilefullPath = "";
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.FileName = "user.config";
+                ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                ofd.Filter = "設定ファイル(*.config)|*.config";
+                ofd.FilterIndex = 1;
+                ofd.Title = "インポートするファイルを選択してください";
+                ofd.RestoreDirectory = true;
+                if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                exportfilefullPath = ofd.FileName;
+            }
+
+            try
+            {
+
+                // user.configのパスを取得
+                string userConfigPath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+                // ファイルが無ければSave()して生成する
+                if (!System.IO.File.Exists(userConfigPath))
+                {
+                    saveSetting();
+                }
+                // インポートはファイルをコピーするだけ
+                System.IO.File.Copy(exportfilefullPath, userConfigPath, true);
+                MessageEx.ShowInformationDialog("インポートしました", Window.GetWindow(this));
+                Settings.Default.Reload();
+                UserSettingLoad(Select_User);
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show().Show(ex.ToString(), "エクスポート失敗", MessageBoxButtons.OK);
+                string message = ex.Message + "\nインポート失敗";
+                MessageEx.ShowErrorDialog(message, Window.GetWindow(this));
+            }
+
+
+        }
     }
+
+
 
     public class MiteneStruct
     {
