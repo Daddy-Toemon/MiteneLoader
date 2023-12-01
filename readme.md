@@ -13,9 +13,6 @@ https://github.com/BB-Sawabe/MiteneLoader/assets/88169524/39941627-191e-4c6f-ab1
 
 でっちあげアプリなのでソースは汚いです。
 
-デバッグ環境では動作しますが、実行環境では、  
-System.DllNotFoundException Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateCoreWebView2EnvironmentWithOptionsのエラーが発生する問題は解決されていません
-
 
 # 使用パッケージ
 このアプリの作成には以下のパッケージを利用しています。
@@ -28,7 +25,7 @@ System.DllNotFoundException Microsoft.Web.WebView2.Core.CoreWebView2Environment.
 
 # インストール
 
-インストーラはありません。　Visual Studio 2022のプロジェクトファイルです
+Installerフォルダー内のSetup.exeからインストール出来ます。
 
 # 使用法
 **設定・システム構成画面**
@@ -60,6 +57,7 @@ System.DllNotFoundException Microsoft.Web.WebView2.Core.CoreWebView2Environment.
 [[WPF＋C#]フォルダエクスプローラーを組み込む](https://resanaplaza.com/2022/04/29/%E3%80%90wpf%EF%BC%8Bc%E3%80%91%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%97%E3%83%AD%E3%83%BC%E3%83%A9%E3%83%BC%E3%82%92%E7%B5%84%E3%81%BF%E8%BE%BC%E3%82%80%EF%BC%88wndows/)  
 [Microsoft Edge WebView2ランタイムを手動でインストールする](https://community.f-secure.com/total-ja/kb/articles/9218-microsoft-edge-webview2%E3%83%A9%E3%83%B3%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%92%E6%89%8B%E5%8B%95%E3%81%A7%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B)  
 [いい感じのMessageBox for WPF](https://qiita.com/hiro_t/items/5a2637179d6f580738de)  
+[WebView2 アプリを 1 つの実行可能ファイルとして配布する](https://learn.microsoft.com/ja-jp/microsoft-edge/webview2/how-to/static)
 
 # ライセンス
 
