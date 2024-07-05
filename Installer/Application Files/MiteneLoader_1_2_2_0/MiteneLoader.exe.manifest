@@ -4,7 +4,7 @@
   <description asmv2:iconFile="mitene.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="MiteneLoader" version="1.2.1.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="MiteneLoader" version="1.2.2.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="MiteneLoader.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -104,23 +104,23 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MiteneLoader.exe" size="288768">
-      <assemblyIdentity name="MiteneLoader" version="1.2.1.0" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="MiteneLoader" version="1.2.2.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>88YjVeZMJRicAiK9NpHdAe5Hq43ENnjfED4ZvV3prUk=</dsig:DigestValue>
+        <dsig:DigestValue>HlQi/eCS7lli5rxK7ykvoTuoWHWkr0S5+Luy5eBriug=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="Installer\setup.exe" size="592312">
+  <file name="Installer\setup.exe" size="574464">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>CJRmMygqiVep8De1oI5NonJMlWUYPqp3YlPcnP4vAyU=</dsig:DigestValue>
+      <dsig:DigestValue>Sy/riFilFgfNuioJbnGpMsbz7zfW28jFVNRK/0xM17k=</dsig:DigestValue>
     </hash>
   </file>
   <file name="mitene.ico" size="67646">
