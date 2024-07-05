@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="MiteneLoader.exe" version="1.2.1.0" publicKeyToken="d8869ac209752c12" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="MiteneLoader.exe" version="1.2.2.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="mitene.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -103,14 +103,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MiteneLoader.exe" size="286136">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MiteneLoader.exe" size="288768">
       <assemblyIdentity name="MiteneLoader" version="1.2.1.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>5twQMQrVABW3GK4qT2soCTsqQ94K8r+l4I7B2YuR8ds=</dsig:DigestValue>
+        <dsig:DigestValue>88YjVeZMJRicAiK9NpHdAe5Hq43ENnjfED4ZvV3prUk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -132,13 +132,13 @@
       <dsig:DigestValue>4q3OjVBxqoGeMvSIytiHqw+y7gRP/1awUynZ2omY+q8=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="MiteneLoader.exe.config" size="5474">
+  <file name="MiteneLoader.exe.config" size="5973">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>UjutwoALnC8uRMgWH0w2WiQgURTSha+YiezWm6kiqfo=</dsig:DigestValue>
+      <dsig:DigestValue>PpdEydGFqOWFcrN5NbX6/LbLUgx7/A7fFX3BWDjY18s=</dsig:DigestValue>
     </hash>
   </file>
   <file name="runtimes\win-arm64\native\WebView2Loader.dll" size="135600">
@@ -168,4 +168,4 @@
       <dsig:DigestValue>1vcMc0sJkX4e+avFSg7chK/qP3hOMcjsdftSWygh7uU=</dsig:DigestValue>
     </hash>
   </file>
-<publisherIdentity name="CN=BABA-IW\sawabe" issuerKeyHash="94cf6d7620d5dc508b339f5172957961db4f1678" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>r2/iKlnnx17vzJVV7qPtzop9F0kx5ZTyvKaNFq5ZP4k=</DigestValue></Reference></SignedInfo><SignatureValue>wsubWCGnjK5WL7PEpUUDIYHh2SCq0L5pbcAxaRcf4nK1/x5QgyVBc0XK4eKidK8RcZvMsFm3uFn684+iMIcMcn9nINx+AEHdhj3TS0ZavZqjVUSWk6BRG4T3AUiuYYZPwxCpqOu8ByAN83LmxtpaNhFLhx6ojMRTpkasUnHkY/Q=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>9Ph9Sfz/IoWEr3WNIkCvuiadu6u5tqDGviKtptEmt4323gFnPMfQj+AW5iEtdaH2z9SG0dz+8cq7Geoole01Qnn76RX8l4nmo28po5vz0Y/L+c+sclEsDbDiEPKxa/XTGqORrWbqN23P32YjTdRok00IlKJugSS87HbpWIa7E30=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="893f59ae168da6bcf294e53149177d8aceeda3ee5595ccef5ec7e7592ae26faf" Description="" Url=""><as:assemblyIdentity name="MiteneLoader.exe" version="1.2.1.0" publicKeyToken="d8869ac209752c12" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=BABA-IW\sawabe</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>Rq6PihlnusUxK8QQ9AFqfpuJ+l3KuTYK8fAWGL46USI=</DigestValue></Reference></SignedInfo><SignatureValue>3UAfLR6DukT2p65vcToY8g0n6VHgHGcypXZLgxV4qknueP6+6iM088gYERouiwuFA+F3Yeg25cl0pwkZ243mqaIrPVwV+Pfs6Vh5t0mQiUp50HriLWFWR81+RIrC2MbtFk3xqMTyqVFZHnELKpouPNwSLeI+ga5lPQgeQB3DmIY=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>9Ph9Sfz/IoWEr3WNIkCvuiadu6u5tqDGviKtptEmt4323gFnPMfQj+AW5iEtdaH2z9SG0dz+8cq7Geoole01Qnn76RX8l4nmo28po5vz0Y/L+c+sclEsDbDiEPKxa/XTGqORrWbqN23P32YjTdRok00IlKJugSS87HbpWIa7E30=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB0TCCATqgAwIBAgIQKiJpOIrRpo1MNXNWcrqgfjANBgkqhkiG9w0BAQsFADAnMSUwIwYDVQQDHhwAQgBBAEIAQQAtAEkAVwBcAHMAYQB3AGEAYgBlMB4XDTIzMDgyNDIzMTQxN1oXDTI0MDgyNDA1MTQxN1owJzElMCMGA1UEAx4cAEIAQQBCAEEALQBJAFcAXABzAGEAdwBhAGIAZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA9Ph9Sfz/IoWEr3WNIkCvuiadu6u5tqDGviKtptEmt4323gFnPMfQj+AW5iEtdaH2z9SG0dz+8cq7Geoole01Qnn76RX8l4nmo28po5vz0Y/L+c+sclEsDbDiEPKxa/XTGqORrWbqN23P32YjTdRok00IlKJugSS87HbpWIa7E30CAwEAATANBgkqhkiG9w0BAQsFAAOBgQAbaCu7DwxYTYxDYTSKbwggWQeQ7mYhapROXhBxgO6b8HAYAveVaPkZ7Hp4ABA3fs/lriZYzpulUy8XqRlbBR/vGebvhPiGz6QTzHpMwGyUhpu5JoBDV/tTaBHdrm8DMpHRJjaxAY2UEdb/GCUlMRheGvxMdBrXjXWyacM37O+VPA==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
+</asmv1:assembly>

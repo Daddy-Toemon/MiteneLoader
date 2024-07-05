@@ -51,6 +51,12 @@ namespace MiteneLoader
     /// </summary>
     public partial class MainWindow : Window
     {
+        public class Photographer
+        {
+            public string User_ID { get; set; }
+            public string User_Name { get; set; }
+        }
+
         // "https://mitene.us/f/bO6hd7QDdb4"
         DataTable miteneData;
         int page_count = 1;
@@ -70,14 +76,22 @@ namespace MiteneLoader
         string Shared_URL;
         string Storage_Folder;
         string Password;
+        string SubFolderType;
         bool useYearMonthFolder;
         bool Login_Cookie_Clear;
         bool Finished_Page_Cancel;
+        bool useUserFolder;
 
+        bool Need_Refresh_Folder = false;
         bool isInternetConnected = false;
         bool initOK = false;
 
+        List<string> userID_list = new List<string>();
+        List<string> userName_List = new List<string>();
+        List<Photographer> photographer_list = new List<Photographer>();
+
         CoreWebView2DownloadOperation downloadOperation;
+
 
         public MainWindow()
         {
@@ -98,6 +112,8 @@ namespace MiteneLoader
             }
 
             initOK = true;
+
+            InitUserList();
 
         }
 
@@ -145,6 +161,41 @@ namespace MiteneLoader
             PageLoading();
         }
 
+        private void InitUserList()
+        {
+            UserGrid.FontSize = 16;
+            UserGrid.AutoGenerateColumns = false;
+            UserGrid.IsReadOnly = false;
+
+            //UserGrid.BorderBrush = new SolidColorBrush(System.Windows.Media.Color.);
+            //UserGrid.Background = System.Windows.Media.Brush.;
+            //UserGrid.ColumnHeaderBackground = Brushes.DodgerBlue;
+            //UserGrid.ColumnHeaderForeground = Brushes.White;
+            //UserGrid.HeaderGridLinesBrush = Brushes.Gray;
+            //UserGrid.GridLinesBrush = SystemColors.WindowBrush;
+            //UserGrid.GroupRowBackground = SystemColors.WindowBrush;
+            //UserGrid.AlternatingRowBackground = SystemColors.WindowBrush;
+            //UserGrid.RowBackground = SystemColors.WindowBrush;
+            //UserGrid.CursorBackground = SystemColors.WindowBrush;
+
+            UserGrid.GridLinesVisibility = DataGridGridLinesVisibility.All;
+            UserGrid.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+            UserGrid.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            
+            int col_index = 0;
+            UserGrid.Columns[col_index].Width = new DataGridLength(150, DataGridLengthUnitType.Pixel);
+            UserGrid.Columns[col_index].Header = "User ID";
+            //UserGrid.Columns[col_index].Binding = col_index;
+
+            col_index++;
+            UserGrid.Columns[col_index].Width = new DataGridLength(200, DataGridLengthUnitType.Star);
+            UserGrid.Columns[col_index].Header = "User Name";
+            //UserGrid.Columns[col_index].DisplayIndex = col_index;
+
+            UserGrid.ItemsSource = photographer_list;
+
+
+        }
         /// <summary>
         /// WebView2のイベントハンドラーを設定する
         /// ref https://note.dokeep.jp/post/wpf-webview2-events/
@@ -558,7 +609,8 @@ namespace MiteneLoader
                     dr["expiringUrl"] = data.expiringUrl;
                     dr["expiringVideoUrl"] = data.expiringVideoUrl;
                     dr["downloadUrl"] = this.Shared_URL + "/media_files/" + data.uuid + "/download";
-                    exist = FileExistCheckPath(data.uuid, dr["tookAt"].ToString());
+                    //exist = FileExistCheckPath(data.uuid, dr["tookAt"].ToString(), data.userId);
+                    exist = FileExistCheck(dr);
                     dr["fileExist"] = exist;
                     miteneData.Rows.Add(dr);
                     line_count++;
@@ -571,7 +623,7 @@ namespace MiteneLoader
 
             if (line_count > 0 && line_count == exist_count)
             {
-                if (Finished_Page_Cancel)
+                if (Finished_Page_Cancel && !Need_Refresh_Folder)
                 {
                     inDataReadProsess = false;
                     DataReadComplete = true;
@@ -659,6 +711,7 @@ namespace MiteneLoader
 
             setAllMenuEnable(true);
             setProgressText();
+            Need_Refresh_Folder = false;
 
         }
 
@@ -766,7 +819,7 @@ namespace MiteneLoader
                     Password = Properties.Settings.Default.Password_0;
                     Shared_URL = Properties.Settings.Default.Shared_URL_0;
                     Storage_Folder = Properties.Settings.Default.Storage_Folder_0;
-                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_0 == 1);
+                    SubFolderType = Properties.Settings.Default.SubFolder_Type_0;
                     Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_0;
                     Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_0;
                     break;
@@ -775,7 +828,7 @@ namespace MiteneLoader
                     Password = Properties.Settings.Default.Password_1;
                     Shared_URL = Properties.Settings.Default.Shared_URL_1;
                     Storage_Folder = Properties.Settings.Default.Storage_Folder_1;
-                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_1 == 1);
+                    SubFolderType = Properties.Settings.Default.SubFolder_Type_1;
                     Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_1;
                     Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_1;
                     break;
@@ -784,7 +837,7 @@ namespace MiteneLoader
                     Password = Properties.Settings.Default.Password_2;
                     Shared_URL = Properties.Settings.Default.Shared_URL_2;
                     Storage_Folder = Properties.Settings.Default.Storage_Folder_2;
-                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_2 == 1);
+                    SubFolderType = Properties.Settings.Default.SubFolder_Type_2;
                     Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_2;
                     Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_2;
                     break;
@@ -793,7 +846,7 @@ namespace MiteneLoader
                     Password = Properties.Settings.Default.Password_3;
                     Shared_URL = Properties.Settings.Default.Shared_URL_3;
                     Storage_Folder = Properties.Settings.Default.Storage_Folder_3;
-                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_3 == 1);
+                    SubFolderType = Properties.Settings.Default.SubFolder_Type_3;
                     Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_3;
                     Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_3;
                     break;
@@ -802,7 +855,7 @@ namespace MiteneLoader
                     Password = Properties.Settings.Default.Password_4;
                     Shared_URL = Properties.Settings.Default.Shared_URL_4;
                     Storage_Folder = Properties.Settings.Default.Storage_Folder_4;
-                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_4 == 1);
+                    SubFolderType = Properties.Settings.Default.SubFolder_Type_4;
                     Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_4;
                     Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_4;
                     break;
@@ -811,7 +864,7 @@ namespace MiteneLoader
                     Password = Properties.Settings.Default.Password_0;
                     Shared_URL = Properties.Settings.Default.Shared_URL_0;
                     Storage_Folder = Properties.Settings.Default.Storage_Folder_0;
-                    useYearMonthFolder = (Properties.Settings.Default.SubFolder_Type_0 == 1);
+                    SubFolderType = Properties.Settings.Default.SubFolder_Type_0;
                     Login_Cookie_Clear = Properties.Settings.Default.Login_Cookie_Clear_0;
                     Finished_Page_Cancel = Properties.Settings.Default.Finished_Page_Cancel_0;
                     break;
@@ -821,11 +874,24 @@ namespace MiteneLoader
             TxtPass.Text = Password;
             TxtSharedURL.Text = Shared_URL;
             TxtFolderPath.Text = Storage_Folder;
-            ChkYearMonthFolder.IsChecked = useYearMonthFolder;
+            txtSubFolderType.Text = SubFolderType;
             ChkClearCookie.IsChecked = Login_Cookie_Clear;
             ChkFinishedPage.IsChecked = Finished_Page_Cancel;
-
             Title.Content = "みてねローダー " + Select_Name;
+
+            var uid_list = Properties.Settings.Default.UserID_List.Split(',');
+            var uname_list = Properties.Settings.Default.UserName_List.Split(',');
+            int i = 0;
+            foreach ( var uid in uid_list)
+            {
+                string uname = uname_list[i];
+                Photographer photographer = new Photographer();
+                photographer.User_ID = uid;
+                photographer.User_Name = uname;
+                photographer_list.Add(photographer);
+                i++;
+            }
+
         }
 
         /// <summary>
@@ -834,25 +900,16 @@ namespace MiteneLoader
         private void saveSetting()
         {
             int select_user = (int)CmbUser.SelectedIndex;
-            int sub_folder_type;
 
             Select_User = select_user;
             Select_Name = TxtName.Text;
             Password = TxtPass.Text;
             Shared_URL = TxtSharedURL.Text;
             Storage_Folder = TxtFolderPath.Text;
-            useYearMonthFolder = (bool)ChkYearMonthFolder.IsChecked;
-            if (useYearMonthFolder)
-            {
-                sub_folder_type = 1;
-            }
-            else
-            {
-                sub_folder_type = 0;
-            }
+            SubFolderType = txtSubFolderType.Text;
+
             Login_Cookie_Clear = (bool)ChkClearCookie.IsChecked;
             Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked;
-
             switch (select_user)
             {
                 case 0:
@@ -860,7 +917,7 @@ namespace MiteneLoader
                     Properties.Settings.Default.Password_0 = Password;
                     Properties.Settings.Default.Shared_URL_0 = Shared_URL;
                     Properties.Settings.Default.Storage_Folder_0 = Storage_Folder;
-                    Properties.Settings.Default.SubFolder_Type_0 = sub_folder_type;
+                    Properties.Settings.Default.SubFolder_Type_0 = SubFolderType;
                     Properties.Settings.Default.Login_Cookie_Clear_0 = Login_Cookie_Clear;
                     Properties.Settings.Default.Finished_Page_Cancel_0 = Finished_Page_Cancel;
                     break;
@@ -869,7 +926,7 @@ namespace MiteneLoader
                     Properties.Settings.Default.Password_1 = Password;
                     Properties.Settings.Default.Shared_URL_1 = Shared_URL;
                     Properties.Settings.Default.Storage_Folder_1 = Storage_Folder;
-                    Properties.Settings.Default.SubFolder_Type_1 = sub_folder_type;
+                    Properties.Settings.Default.SubFolder_Type_1 = SubFolderType;
                     Properties.Settings.Default.Login_Cookie_Clear_1 = Login_Cookie_Clear;
                     Properties.Settings.Default.Finished_Page_Cancel_1 = Finished_Page_Cancel;
                     break;
@@ -878,7 +935,7 @@ namespace MiteneLoader
                     Properties.Settings.Default.Password_2 = Password;
                     Properties.Settings.Default.Shared_URL_2 = Shared_URL;
                     Properties.Settings.Default.Storage_Folder_2 = Storage_Folder;
-                    Properties.Settings.Default.SubFolder_Type_2 = sub_folder_type;
+                    Properties.Settings.Default.SubFolder_Type_2 = SubFolderType;
                     Properties.Settings.Default.Login_Cookie_Clear_2 = Login_Cookie_Clear;
                     Properties.Settings.Default.Finished_Page_Cancel_2 = Finished_Page_Cancel;
                     break;
@@ -887,7 +944,7 @@ namespace MiteneLoader
                     Properties.Settings.Default.Password_3 = Password;
                     Properties.Settings.Default.Shared_URL_3 = Shared_URL;
                     Properties.Settings.Default.Storage_Folder_3 = Storage_Folder;
-                    Properties.Settings.Default.SubFolder_Type_3 = sub_folder_type;
+                    Properties.Settings.Default.SubFolder_Type_3 = SubFolderType;
                     Properties.Settings.Default.Login_Cookie_Clear_3 = Login_Cookie_Clear;
                     Properties.Settings.Default.Finished_Page_Cancel_3 = Finished_Page_Cancel;
                     break;
@@ -896,7 +953,7 @@ namespace MiteneLoader
                     Properties.Settings.Default.Password_4 = Password;
                     Properties.Settings.Default.Shared_URL_4 = Shared_URL;
                     Properties.Settings.Default.Storage_Folder_4 = Storage_Folder;
-                    Properties.Settings.Default.SubFolder_Type_4 = sub_folder_type;
+                    Properties.Settings.Default.SubFolder_Type_4 = SubFolderType;
                     Properties.Settings.Default.Login_Cookie_Clear_4 = Login_Cookie_Clear;
                     Properties.Settings.Default.Finished_Page_Cancel_4 = Finished_Page_Cancel;
                     break;
@@ -905,12 +962,20 @@ namespace MiteneLoader
                     Properties.Settings.Default.Password_0 = Password;
                     Properties.Settings.Default.Shared_URL_0 = Shared_URL;
                     Properties.Settings.Default.Storage_Folder_0 = Storage_Folder;
-                    Properties.Settings.Default.SubFolder_Type_0 = sub_folder_type;
+                    Properties.Settings.Default.SubFolder_Type_0 = SubFolderType;
                     Properties.Settings.Default.Login_Cookie_Clear_0 = Login_Cookie_Clear;
                     Properties.Settings.Default.Finished_Page_Cancel_0 = Finished_Page_Cancel;
                     break;
             }
             Properties.Settings.Default.User_Num = select_user;
+
+            foreach(var photographer in photographer_list)
+            {
+                userID_list.Add(photographer.User_ID);
+                userName_List.Add(photographer.User_Name);
+            }
+            Properties.Settings.Default.UserID_List = String.Join(",", userID_list);
+            Properties.Settings.Default.UserName_List = String.Join(",", userName_List);
             Properties.Settings.Default.Save();
 
         }
@@ -934,6 +999,7 @@ namespace MiteneLoader
 
             DataRow row = getMiteneDataByUuid(uuid);
             string tookAT = "";
+            string userID = "";
 
 
 
@@ -944,13 +1010,15 @@ namespace MiteneLoader
             }
             else
             {
+                userID = row["userID"].ToString();
                 tookAT = row["tookAt"].ToString();
                 string uuid2 = row["uuid"].ToString();
                 string date = tookAT.Replace(":", "-").Substring(0, 19);
+                
 
                 file_name = date + "(" + uuid + ")" + ex;
             }
-            string folder_path = getFoldrPath(tookAT);
+            string folder_path = getCustomFolderPath(tookAT, userID);
             return folder_path + @"\" + file_name;
         }
 
@@ -960,119 +1028,66 @@ namespace MiteneLoader
         /// </summary>
         /// <param name="uuid,">みてねデータのuuid</param>
         /// <param name="tookAt,">みてねデータのtookAt</param>
+        /// <param name="userID,">みてねデータのtookAt</param>
         /// <returns></returns>
-        private string getFileName(DataRow row, string extension)
-        {
-            if (row == null) return "";
-            string tookAT = row["tookAt"].ToString();
-            string uuid = row["uuid"].ToString();
-            string date = tookAT.Replace(":", "-").Substring(0, 19);
-            if (string.IsNullOrEmpty(extension)) extension = ".*";
 
-            return date + "(" + uuid + ")" + extension;
-        }
-
-        /// <summary>
-        /// みてねデータが保存済みかどうかを調べる
-        /// TookAt(uuid)形式の保存フォルダーを含むフルパスとして返す。
-        /// </summary>
-        /// <param name="uuid,">みてねデータのuuid</param>
-        /// <param name="tookAt,">みてねデータのtookAt</param>
-        /// <returns></returns>
-        private bool FileExistCheckPath(string uuid, string tookAt)
+        private bool FileExistCheck(DataRow datarow )
         {
             //年月フォルダーと保存ルートフォルダーの両方をしらべ
             //ファイルが存在する場合は、
             //useYearMonthFolderの設定に従い移動処理を行いtrueを返す。
             //ファイルがない場合は、falseを返す
 
-            string normal_path = Storage_Folder;
-            string year_month_path = getYearMonthFoldrPath(tookAt);
+            string tookAt = datarow["tookAt"].ToString();
+            string userID = datarow["userId"].ToString();
+            string uuid = datarow["uuid"].ToString();
+
+            string base_path = Storage_Folder;
+
+            string custom_path = getCustomFolderPath(tookAt,userID);
 
             string date = tookAt.Replace(":", "-").Substring(0, 19);
             string extension = ".*";
             string check_file_name = date + "(" + uuid + ")" + extension;
 
-            string[] normal_files = null;
-            string[] year_month_files = null;
+            string[] base_path_files = null;
+            string[] custom_path_files = null;
 
-            normal_files = Directory.GetFiles(normal_path, check_file_name);
-            bool normal_found = (normal_files.Length > 0);
+            base_path_files = Directory.GetFiles(base_path, check_file_name);
+            bool base_found = (base_path_files.Length > 0);
 
-            bool year_month_found = false;
-            if (System.IO.Directory.Exists(year_month_path))
+            bool custom_path_found = false;
+            if (System.IO.Directory.Exists(custom_path))
             {
-                year_month_files = Directory.GetFiles(year_month_path, check_file_name);
-                year_month_found = (year_month_files.Length > 0);
+                custom_path_files = Directory.GetFiles(custom_path, check_file_name);
+                custom_path_found = (custom_path_files.Length > 0);
+            }
+
+            if (!System.IO.Directory.Exists(custom_path))
+            {
+                Directory.CreateDirectory(custom_path);
             }
 
 
-            //ファイル移動処理
-            if (useYearMonthFolder)
+            if (!custom_path_found && base_found)
             {
-                //年月サブフォルダー使用時サブフォルダーがなければ作成
-                if (!System.IO.Directory.Exists(year_month_path))
+                foreach (string from_file in base_path_files)
                 {
-                    Directory.CreateDirectory(year_month_path);
-                }
-
-
-                if (normal_found)
-                {
-                    foreach (string from_file in normal_files)
+                    string file_name = System.IO.Path.GetFileName(from_file);
+                    string to_file = custom_path + @"\" + file_name;
+                    if (!System.IO.File.Exists(to_file))
                     {
-                        string file_name = System.IO.Path.GetFileName(from_file);
-                        string to_file = year_month_path + @"\" + file_name;
-                        if (!System.IO.File.Exists(to_file))
-                        {
-                            System.IO.File.Move(from_file, to_file);
-                        }
-                        else
-                        {
-                            System.IO.File.Delete(from_file);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (year_month_found)
-                {
-                    foreach (string from_file in year_month_files)
-                    {
-                        string file_name = System.IO.Path.GetFileName(from_file);
-                        string to_file = normal_path + @"\" + file_name;
-                        if (!System.IO.File.Exists(to_file))
-                        {
-                            System.IO.File.Move(from_file, to_file);
-                        }
-                        else
-                        {
-                            System.IO.File.Delete(from_file);
-                        }
-                    }
-                }
-
-                //サブフォルダー内残ファイル移動及びサブフォルダー削除
-
-                string[] sub_dirs = Directory.GetDirectories(normal_path);
-                foreach (string sub_dir in sub_dirs)
-                {
-                    IEnumerable<string> files = System.IO.Directory.EnumerateFiles(sub_dir, "*", System.IO.SearchOption.AllDirectories);
-
-                    foreach (string from_file in files)
-                    {
-                        string file_name = System.IO.Path.GetFileName(from_file);
-                        string to_file = normal_path + @"\" + file_name;
                         System.IO.File.Move(from_file, to_file);
                     }
-                    Directory.Delete(sub_dir, true);
+                    else
+                    {
+                        System.IO.File.Delete(from_file);
+                    }
                 }
+
             }
 
-
-
-            if (normal_found || year_month_found)
+            if (base_found || custom_path_found)
             {
                 return true;
             }
@@ -1096,19 +1111,9 @@ namespace MiteneLoader
         }
 
 
-        private string getFoldrPath(string TookAt)
-        {
-            if (useYearMonthFolder)
-            {
-                return getYearMonthFoldrPath(TookAt);
-            }
-            return Storage_Folder;
-        }
-
-        private string getYearMonthFoldrPath(string TookAt)
+        private string getCustomFolderPath(string TookAt, string userID)
         {
             if (string.IsNullOrEmpty(TookAt)) return Storage_Folder;
-
             string matchStr = @"^\d{4}-\d{2}-\d{2}";
 
             bool result = Regex.IsMatch(TookAt, matchStr);
@@ -1118,8 +1123,37 @@ namespace MiteneLoader
             string date = TookAt.Replace(":", "-").Substring(0, 19);
             string Year = date.Substring(0, 4);
             string Month = date.Substring(5, 2);
-            return Storage_Folder + @"\" + Year + @"\" + Month;
+            string day = date.Substring(8, 2);
+
+            string userName = "";
+            foreach (var photographer in photographer_list)
+            {
+                if (photographer.User_ID.Equals(userID))
+                {
+                    userName = photographer.User_Name;
+                    break;
+                }
+            }
+
+            if (userName.Length == 0)
+            {
+                userName = userID;
+            }
+
+            string folder_patern = SubFolderType;
+
+            folder_patern = folder_patern.Replace("@YYYY", Year);
+            folder_patern = folder_patern.Replace("@MM", Month);
+            folder_patern = folder_patern.Replace("@DD", day);
+            folder_patern = folder_patern.Replace("@USER", userName);
+
+            if (folder_patern.Length > 0)
+            {
+                return Storage_Folder + "\\" + folder_patern;
+            }
+            return Storage_Folder;
         }
+
 
         /// <summary>
         /// 重複しないTookAtデータを(を取得する　例2023-08-22T19:08:25 09:00(1)
@@ -1146,6 +1180,36 @@ namespace MiteneLoader
             }
             return newName;
         }
+
+        /// <summary>
+        /// Photoデータをすべてベースフォルダーへ移動する
+        /// </summary>
+
+        private void AllPhotoMoveBaseFolder()
+        {
+            string[] files = System.IO.Directory.GetFiles(
+                    Storage_Folder, "*", System.IO.SearchOption.AllDirectories);
+            foreach (string file in files) 
+            {
+                string new_file = Storage_Folder + "\\" + System.IO.Path.GetFileName(file);
+                System.IO.File.Move(file, new_file);
+            }
+
+            string[] subFolders = System.IO.Directory.GetDirectories(
+                        Storage_Folder, "*", System.IO.SearchOption.TopDirectoryOnly);
+            foreach (string subfolder in subFolders) 
+            {
+                System.IO.Directory.Delete(subfolder, true); //根こそぎ削除
+            }
+
+        }
+
+        private void PhotoMoveSettingPath(string file_path)
+        {
+
+        }
+
+
 
         #endregion
         //
@@ -1221,6 +1285,9 @@ namespace MiteneLoader
             initCmbUser();
 
             PageLoading();
+
+            AllPhotoMoveBaseFolder();
+            Need_Refresh_Folder = true;
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1782,6 +1849,11 @@ namespace MiteneLoader
                 MessageEx.ShowErrorDialog(message, Window.GetWindow(this));
             }
 
+
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
         }
     }

@@ -65,20 +65,20 @@
     <Setting Name="Storage_Folder_4" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Mitene_Data</Value>
     </Setting>
-    <Setting Name="SubFolder_Type_0" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="SubFolder_Type_0" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@YYYY\MM</Value>
     </Setting>
-    <Setting Name="SubFolder_Type_1" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="SubFolder_Type_1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@YYYY\MM</Value>
     </Setting>
-    <Setting Name="SubFolder_Type_2" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="SubFolder_Type_2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@YYYY\MM</Value>
     </Setting>
-    <Setting Name="SubFolder_Type_3" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="SubFolder_Type_3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@YYYY\MM</Value>
     </Setting>
-    <Setting Name="SubFolder_Type_4" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="SubFolder_Type_4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@YYYY\MM</Value>
     </Setting>
     <Setting Name="Login_Cookie_Clear_0" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -109,6 +109,12 @@
     </Setting>
     <Setting Name="Finished_Page_Cancel_4" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UserID_List" Type="System.String" Scope="User">
+      <Value Profile="(Default)">977167176855,741344068196,537027308733,485355320894,331879840492,195260822059,717163229874,448437270311,759605084854,432972386930</Value>
+    </Setting>
+    <Setting Name="UserName_List" Type="System.String" Scope="User">
+      <Value Profile="(Default)">さわべ,山口博司,吉川,鈴木,野作,畑,澤邉農園,北口,山口博司,山口正幸</Value>
     </Setting>
   </Settings>
 </SettingsFile>

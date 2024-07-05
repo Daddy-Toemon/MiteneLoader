@@ -12,7 +12,7 @@ namespace MiteneLoader.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -282,10 +282,10 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SubFolder_Type_0 {
+        [global::System.Configuration.DefaultSettingValueAttribute("@YYYY\\MM")]
+        public string SubFolder_Type_0 {
             get {
-                return ((int)(this["SubFolder_Type_0"]));
+                return ((string)(this["SubFolder_Type_0"]));
             }
             set {
                 this["SubFolder_Type_0"] = value;
@@ -294,10 +294,10 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SubFolder_Type_1 {
+        [global::System.Configuration.DefaultSettingValueAttribute("@YYYY\\MM")]
+        public string SubFolder_Type_1 {
             get {
-                return ((int)(this["SubFolder_Type_1"]));
+                return ((string)(this["SubFolder_Type_1"]));
             }
             set {
                 this["SubFolder_Type_1"] = value;
@@ -306,10 +306,10 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SubFolder_Type_2 {
+        [global::System.Configuration.DefaultSettingValueAttribute("@YYYY\\MM")]
+        public string SubFolder_Type_2 {
             get {
-                return ((int)(this["SubFolder_Type_2"]));
+                return ((string)(this["SubFolder_Type_2"]));
             }
             set {
                 this["SubFolder_Type_2"] = value;
@@ -318,10 +318,10 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SubFolder_Type_3 {
+        [global::System.Configuration.DefaultSettingValueAttribute("@YYYY\\MM")]
+        public string SubFolder_Type_3 {
             get {
-                return ((int)(this["SubFolder_Type_3"]));
+                return ((string)(this["SubFolder_Type_3"]));
             }
             set {
                 this["SubFolder_Type_3"] = value;
@@ -330,10 +330,10 @@ namespace MiteneLoader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int SubFolder_Type_4 {
+        [global::System.Configuration.DefaultSettingValueAttribute("@YYYY\\MM")]
+        public string SubFolder_Type_4 {
             get {
-                return ((int)(this["SubFolder_Type_4"]));
+                return ((string)(this["SubFolder_Type_4"]));
             }
             set {
                 this["SubFolder_Type_4"] = value;
@@ -457,6 +457,31 @@ namespace MiteneLoader.Properties {
             }
             set {
                 this["Finished_Page_Cancel_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("977167176855,741344068196,537027308733,485355320894,331879840492,195260822059,717" +
+            "163229874,448437270311,759605084854,432972386930")]
+        public string UserID_List {
+            get {
+                return ((string)(this["UserID_List"]));
+            }
+            set {
+                this["UserID_List"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("さわべ,山口博司,吉川,鈴木,野作,畑,澤邉農園,北口,山口博司,山口正幸")]
+        public string UserName_List {
+            get {
+                return ((string)(this["UserName_List"]));
+            }
+            set {
+                this["UserName_List"] = value;
             }
         }
     }
