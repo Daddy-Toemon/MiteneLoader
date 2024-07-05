@@ -1192,7 +1192,18 @@ namespace MiteneLoader
             foreach (string file in files) 
             {
                 string new_file = Storage_Folder + "\\" + System.IO.Path.GetFileName(file);
-                System.IO.File.Move(file, new_file);
+                if (!new_file.Equals(file))
+                {
+                    if (System.IO.File.Exists(new_file))
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                    else
+                    {
+                        System.IO.File.Move(file, new_file);
+                    }
+
+                }
             }
 
             string[] subFolders = System.IO.Directory.GetDirectories(
