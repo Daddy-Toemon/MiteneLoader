@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <configSections>
+        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="MiteneLoader.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8"/>
+    </startup>
+    <userSettings>
+        <MiteneLoader.Properties.Settings>
+            <setting name="User_Num" serializeAs="String">
+                <value>0</value>
+            </setting>
+            <setting name="Name_0" serializeAs="String">
+                <value>User_0</value>
+            </setting>
+            <setting name="Name_1" serializeAs="String">
+                <value>User_1</value>
+            </setting>
+            <setting name="Name_2" serializeAs="String">
+                <value>User_2</value>
+            </setting>
+            <setting name="Name_3" serializeAs="String">
+                <value>User_3</value>
+            </setting>
+            <setting name="Name_4" serializeAs="String">
+                <value>User_4</value>
+            </setting>
+            <setting name="Password_0" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="Password_1" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="Password_2" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="Password_3" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="Password_4" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="Shared_URL_0" serializeAs="String">
+                <value>https://mitene.us/f/</value>
+            </setting>
+            <setting name="Shared_URL_1" serializeAs="String">
+                <value>https://mitene.us/f/</value>
+            </setting>
+            <setting name="Shared_URL_2" serializeAs="String">
+                <value>https://mitene.us/f/</value>
+            </setting>
+            <setting name="Shared_URL_3" serializeAs="String">
+                <value>https://mitene.us/f/</value>
+            </setting>
+            <setting name="Shared_URL_4" serializeAs="String">
+                <value>https://mitene.us/f/</value>
+            </setting>
+            <setting name="Storage_Folder_0" serializeAs="String">
+                <value>C:\Mitene_Data</value>
+            </setting>
+            <setting name="Storage_Folder_1" serializeAs="String">
+                <value>C:\Mitene_Data</value>
+            </setting>
+            <setting name="Storage_Folder_2" serializeAs="String">
+                <value>C:\Mitene_Data</value>
+            </setting>
+            <setting name="Storage_Folder_3" serializeAs="String">
+                <value>C:\Mitene_Data</value>
+            </setting>
+            <setting name="Storage_Folder_4" serializeAs="String">
+                <value>C:\Mitene_Data</value>
+            </setting>
+            <setting name="SubFolder_Type_0" serializeAs="String">
+                <value>@YYYY\MM</value>
+            </setting>
+            <setting name="SubFolder_Type_1" serializeAs="String">
+                <value>@YYYY\MM</value>
+            </setting>
+            <setting name="SubFolder_Type_2" serializeAs="String">
+                <value>@YYYY\MM</value>
+            </setting>
+            <setting name="SubFolder_Type_3" serializeAs="String">
+                <value>@YYYY\MM</value>
+            </setting>
+            <setting name="SubFolder_Type_4" serializeAs="String">
+                <value>@YYYY\MM</value>
+            </setting>
+            <setting name="Login_Cookie_Clear_0" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Login_Cookie_Clear_1" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Login_Cookie_Clear_2" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Login_Cookie_Clear_3" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Login_Cookie_Clear_4" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Finished_Page_Cancel_0" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Finished_Page_Cancel_1" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Finished_Page_Cancel_2" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Finished_Page_Cancel_3" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="Finished_Page_Cancel_4" serializeAs="String">
+                <value>False</value>
+            </setting>
+            <setting name="UserID_List" serializeAs="String">
+                <value>977167176855,741344068196,537027308733,485355320894,331879840492,195260822059,717163229874,448437270311,759605084854,432972386930</value>
+            </setting>
+            <setting name="UserName_List" serializeAs="String">
+                <value>さわべ,山口博司,吉川,鈴木,野作,畑,澤邉農園,北口,山口博司,山口正幸</value>
+            </setting>
+        </MiteneLoader.Properties.Settings>
+    </userSettings>
+</configuration>

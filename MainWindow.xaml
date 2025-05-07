@@ -151,6 +151,12 @@
                             <DataGridTextColumn Binding="{Binding User_ID}"/>
                             <DataGridTextColumn Binding="{Binding User_Name}"/>
                         </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="削除" Click="DeleteRow_Click"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+
                     </DataGrid>
 
                     <Button x:Name="BtnSettingSave" Grid.Row="10"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />

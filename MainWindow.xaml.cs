@@ -406,7 +406,8 @@ namespace MiteneLoader
             if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
             {
                 //インターネットに接続されているか確認する
-                string host = "http://www.yahoo.com";
+                string host = "https://www.google.com";
+
 
                 System.Net.HttpWebRequest webreq = null;
                 System.Net.HttpWebResponse webres = null;
@@ -1863,10 +1864,21 @@ namespace MiteneLoader
 
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
 
+
+
+        private void DeleteRow_Click(object sender, RoutedEventArgs e)
+        {
+            if (UserGrid.SelectedItem != null)
+            {
+                (UserGrid.ItemsSource as IList)?.Remove(UserGrid.SelectedItem);
+                UserGrid.ItemsSource = null;
+                UserGrid.ItemsSource = photographer_list;
+
+
+            }
         }
+
     }
 
 
