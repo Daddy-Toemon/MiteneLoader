@@ -7,14 +7,14 @@
     <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Application Files\MiteneLoader_1_2_4_0\MiteneLoader.exe.manifest" size="9278">
+    <dependentAssembly dependencyType="install" codebase="Application Files\MiteneLoader_1_2_4_0\MiteneLoader.exe.manifest" size="10601">
       <assemblyIdentity name="MiteneLoader.exe" version="1.2.4.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>kuwBSu98qs2ousKupnhCxdg0KfkvuCqpOFeJGNQDU+w=</dsig:DigestValue>
+        <dsig:DigestValue>KqnTFR9rR0GKMSJEXRIEqtIZQinKS+blDTUqxiXG6zU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

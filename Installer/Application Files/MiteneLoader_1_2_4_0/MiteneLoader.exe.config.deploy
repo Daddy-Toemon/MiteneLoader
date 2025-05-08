@@ -124,6 +124,9 @@
             <setting name="UserName_List" serializeAs="String">
                 <value>さわべ,山口博司,吉川,鈴木,野作,畑,澤邉農園,北口,山口博司,山口正幸</value>
             </setting>
+            <setting name="Download_Max" serializeAs="String">
+                <value>0</value>
+            </setting>
         </MiteneLoader.Properties.Settings>
     </userSettings>
 </configuration>

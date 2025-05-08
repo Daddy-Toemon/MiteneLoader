@@ -116,5 +116,8 @@
     <Setting Name="UserName_List" Type="System.String" Scope="User">
       <Value Profile="(Default)">さわべ,山口博司,吉川,鈴木,野作,畑,澤邉農園,北口,山口博司,山口正幸</Value>
     </Setting>
+    <Setting Name="Download_Max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

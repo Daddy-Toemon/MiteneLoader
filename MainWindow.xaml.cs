@@ -60,6 +60,8 @@ namespace MiteneLoader
         // "https://mitene.us/f/bO6hd7QDdb4"
         DataTable miteneData;
         int page_count = 1;
+        int download_count = 0;
+        int download_max = 0;
         readonly CountdownEvent condition = new CountdownEvent(1);
 
         bool DataDownloadComplete = false;
@@ -77,6 +79,8 @@ namespace MiteneLoader
         string Storage_Folder;
         string Password;
         string SubFolderType;
+
+        string Download_Year;
         bool useYearMonthFolder;
         bool Login_Cookie_Clear;
         bool Finished_Page_Cancel;
@@ -85,6 +89,9 @@ namespace MiteneLoader
         bool Need_Refresh_Folder = false;
         bool isInternetConnected = false;
         bool initOK = false;
+
+        Regex number_regex = new Regex("[^0-9.]+");
+
 
         List<string> userID_list = new List<string>();
         List<string> userName_List = new List<string>();
@@ -112,6 +119,7 @@ namespace MiteneLoader
             }
 
             initOK = true;
+
 
             InitUserList();
 
@@ -191,7 +199,7 @@ namespace MiteneLoader
             UserGrid.Columns[col_index].Width = new DataGridLength(200, DataGridLengthUnitType.Star);
             UserGrid.Columns[col_index].Header = "User Name";
             //UserGrid.Columns[col_index].DisplayIndex = col_index;
-
+            UserGrid.ItemsSource = null;
             UserGrid.ItemsSource = photographer_list;
 
 
@@ -518,6 +526,9 @@ namespace MiteneLoader
                 Menu_WebBrowse.Visibility = Visibility.Collapsed;
             }
             Menu_DoStart.Visibility = Visibility.Collapsed;
+
+            UserGrid.ItemsSource = null;
+            UserGrid.ItemsSource = photographer_list;
         }
 
         /// <summary>
@@ -576,6 +587,7 @@ namespace MiteneLoader
 
             int line_count = 0;
             int exist_count = 0;
+
             while (rs.Peek() > -1)
             {
                 //一行読み込んで表示する
@@ -611,7 +623,10 @@ namespace MiteneLoader
                     dr["expiringVideoUrl"] = data.expiringVideoUrl;
                     dr["downloadUrl"] = this.Shared_URL + "/media_files/" + data.uuid + "/download";
                     //exist = FileExistCheckPath(data.uuid, dr["tookAt"].ToString(), data.userId);
+
                     exist = FileExistCheck(dr);
+                    var year_str = data.tookAt.Substring(0, 4);
+
                     dr["fileExist"] = exist;
                     miteneData.Rows.Add(dr);
                     line_count++;
@@ -622,6 +637,7 @@ namespace MiteneLoader
             Debug.Print("MiteneWebView.DataLoad: " + count);
             setProgressText();
 
+            Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked;
             if (line_count > 0 && line_count == exist_count)
             {
                 if (Finished_Page_Cancel && !Need_Refresh_Folder)
@@ -644,14 +660,25 @@ namespace MiteneLoader
             progressBar.Width = this.Width - 30;
             inDownloadProsess = true;
 
+            download_max = Convert.ToInt32(TxtDownload_Max.Text);
+
+
             DataRow[] foundRows;
 
             string selectStr = "fileExist = 'False'";
-            foundRows = miteneData.Select(selectStr);
 
-            int download_count = foundRows.Length;
+            if (download_max > 0)
+            {
+                foundRows = miteneData.Select(selectStr).Reverse().Take(download_max).ToArray();
+            }
+            else
+            {
+                foundRows = miteneData.Select(selectStr).Reverse().ToArray();
+            }
 
-            progressBar.Maximum = download_count;
+            int download_count_max = foundRows.Length;
+
+            progressBar.Maximum = download_count_max;
             progressBar.Value = 0;
             setProgressText();
 
@@ -674,10 +701,12 @@ namespace MiteneLoader
 
                 if (!ReadOK) return;
                 progressBar.Value++;
-                setProgressText();
+
+                    setProgressText();
 
                 //download history clear
                 ClearDownloadHistoryData();
+
             }
 
             if (progressBar.Value >= progressBar.Maximum)
@@ -879,10 +908,11 @@ namespace MiteneLoader
             ChkClearCookie.IsChecked = Login_Cookie_Clear;
             ChkFinishedPage.IsChecked = Finished_Page_Cancel;
             Title.Content = "みてねローダー " + Select_Name;
-
+            TxtDownload_Max.Text = Properties.Settings.Default.Download_Max.ToString();
             var uid_list = Properties.Settings.Default.UserID_List.Split(',');
             var uname_list = Properties.Settings.Default.UserName_List.Split(',');
             int i = 0;
+            photographer_list.Clear();
             foreach ( var uid in uid_list)
             {
                 string uname = uname_list[i];
@@ -892,6 +922,11 @@ namespace MiteneLoader
                 photographer_list.Add(photographer);
                 i++;
             }
+            UserGrid.ItemsSource = null;
+            UserGrid.ItemsSource = photographer_list;
+
+
+
 
         }
 
@@ -968,13 +1003,19 @@ namespace MiteneLoader
                     Properties.Settings.Default.Finished_Page_Cancel_0 = Finished_Page_Cancel;
                     break;
             }
+
+            Properties.Settings.Default.Download_Max = Convert.ToInt32(TxtDownload_Max.Text);
             Properties.Settings.Default.User_Num = select_user;
 
-            foreach(var photographer in photographer_list)
+            userID_list.Clear();
+            userName_List.Clear();
+            foreach (var photographer in photographer_list)
             {
                 userID_list.Add(photographer.User_ID);
                 userName_List.Add(photographer.User_Name);
             }
+            Properties.Settings.Default.UserID_List = "";
+            Properties.Settings.Default.UserName_List = "";
             Properties.Settings.Default.UserID_List = String.Join(",", userID_list);
             Properties.Settings.Default.UserName_List = String.Join(",", userName_List);
             Properties.Settings.Default.Save();
@@ -1362,11 +1403,12 @@ namespace MiteneLoader
             setProgressText();
             setAllMenuEnable(false);
             miteneData.Clear();
+            download_count = 0; // download_count は do_download でカウントする
             ReadData();
-            if (!DataReadComplete)
-            {
-                nextPage();
-            }
+                if (!DataReadComplete)
+                {
+                    nextPage();
+                }
         }
 
         private void setProgressText()
@@ -1879,6 +1921,12 @@ namespace MiteneLoader
             }
         }
 
+        private void TxtDownload_Max_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var text = TxtDownload_Max.Text + e.Text;
+            e.Handled = number_regex.IsMatch(text);
+
+        }
     }
 
 

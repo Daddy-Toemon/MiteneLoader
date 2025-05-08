@@ -162,6 +162,8 @@
                     <Button x:Name="BtnSettingSave" Grid.Row="10"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定の保存" Click="BtnSettingSave_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
                     <Button x:Name="BtnSettingExport" Grid.Row="10"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定のエクスポート" Click="BtnSettingExport_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="0,0,150,0" />
                     <Button x:Name="BtnSettingInport" Grid.Row="10"  Grid.Column="2" Template="{StaticResource RoundButton}" Content="設定のインポート" Click="BtnSettingInport_Click" Width="100" Height="40" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,260,0" />
+                    <TextBox x:Name="TxtDownload_Max" Grid.Column="2" HorizontalAlignment="Left" Margin="453,0,0,0" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Center" Width="109" Height="31" FontSize="16" PreviewTextInput="TxtDownload_Max_PreviewTextInput"/>
+                    <Label Grid.Row="5" Grid.Column="2" Content="最大ダウンロード数" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" Margin="318,0,388,0" />
 
                 </Grid>
             </DockPanel>
