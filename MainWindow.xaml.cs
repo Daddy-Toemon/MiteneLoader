@@ -62,6 +62,8 @@ namespace MiteneLoader
         int page_count = 1;
         int download_count = 0;
         int download_max = 0;
+        int download_eny_month = 0;
+
         readonly CountdownEvent condition = new CountdownEvent(1);
 
         bool DataDownloadComplete = false;
@@ -189,7 +191,7 @@ namespace MiteneLoader
             UserGrid.GridLinesVisibility = DataGridGridLinesVisibility.All;
             UserGrid.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             UserGrid.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            
+
             int col_index = 0;
             UserGrid.Columns[col_index].Width = new DataGridLength(150, DataGridLengthUnitType.Pixel);
             UserGrid.Columns[col_index].Header = "User ID";
@@ -548,6 +550,17 @@ namespace MiteneLoader
         {
             var html = await MiteneWebView.CoreWebView2.ExecuteScriptAsync("document.documentElement.outerHTML");
 
+            bool month_limit = false;
+            int TargetPeriod = Convert.ToInt32(txtTargetPeriod.Text);
+
+            DateTime limit_dateTime = DateTime.Now;
+
+            if (TargetPeriod > 0)
+            {
+                limit_dateTime = DateTime.Now.AddMonths(-TargetPeriod);
+            }
+
+
             string src = WebUtility.UrlDecode(html);
             string defaultStr = src;
 
@@ -627,25 +640,65 @@ namespace MiteneLoader
                     exist = FileExistCheck(dr);
                     var year_str = data.tookAt.Substring(0, 4);
 
+                    string str = dr["tookAt"].ToString().Substring(0, 10);
+                    string format = "yyyy-MM-dd";
+                    DateTime checked_dateTime = DateTime.ParseExact(str, format, null);
+
+                    if (TargetPeriod > 0)
+                    {
+                        month_limit = (limit_dateTime > checked_dateTime);
+                    }
+                    else
+                    {
+                        month_limit = false;
+                    }
+
                     dr["fileExist"] = exist;
                     miteneData.Rows.Add(dr);
                     line_count++;
                     if (exist == true) exist_count++;
+
+
                 }
             }
             string count = "count:" + line_count + "/Total:" + miteneData.Rows.Count;
             Debug.Print("MiteneWebView.DataLoad: " + count);
             setProgressText();
 
-            Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked;
+
+
+            Finished_Page_Cancel = (bool)ChkFinishedPage.IsChecked; //保存済みページ以降の確認を行わない
             if (line_count > 0 && line_count == exist_count)
             {
-                if (Finished_Page_Cancel && !Need_Refresh_Folder)
+                if (TargetPeriod > 0)
                 {
-                    inDataReadProsess = false;
-                    DataReadComplete = true;
-                    doDownload();
-                    return;
+                    if (month_limit)
+                    {
+                        inDataReadProsess = false;
+                        DataReadComplete = true;
+                        doDownload();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (Finished_Page_Cancel)
+                    {
+                        if (!Need_Refresh_Folder)
+                        {
+                            inDataReadProsess = false;
+                            DataReadComplete = true;
+                            doDownload();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        inDataReadProsess = false;
+                        DataReadComplete = true;
+                        doDownload();
+                        return;
+                    }
                 }
             }
 
@@ -661,6 +714,8 @@ namespace MiteneLoader
             inDownloadProsess = true;
 
             download_max = Convert.ToInt32(TxtDownload_Max.Text);
+
+            download_eny_month = Convert.ToInt32(txtTargetPeriod.Text);
 
 
             DataRow[] foundRows;
@@ -702,7 +757,7 @@ namespace MiteneLoader
                 if (!ReadOK) return;
                 progressBar.Value++;
 
-                    setProgressText();
+                setProgressText();
 
                 //download history clear
                 ClearDownloadHistoryData();
@@ -913,7 +968,7 @@ namespace MiteneLoader
             var uname_list = Properties.Settings.Default.UserName_List.Split(',');
             int i = 0;
             photographer_list.Clear();
-            foreach ( var uid in uid_list)
+            foreach (var uid in uid_list)
             {
                 string uname = uname_list[i];
                 Photographer photographer = new Photographer();
@@ -1056,7 +1111,7 @@ namespace MiteneLoader
                 tookAT = row["tookAt"].ToString();
                 string uuid2 = row["uuid"].ToString();
                 string date = tookAT.Replace(":", "-").Substring(0, 19);
-                
+
 
                 file_name = date + "(" + uuid + ")" + ex;
             }
@@ -1073,7 +1128,7 @@ namespace MiteneLoader
         /// <param name="userID,">みてねデータのtookAt</param>
         /// <returns></returns>
 
-        private bool FileExistCheck(DataRow datarow )
+        private bool FileExistCheck(DataRow datarow)
         {
             //年月フォルダーと保存ルートフォルダーの両方をしらべ
             //ファイルが存在する場合は、
@@ -1086,7 +1141,7 @@ namespace MiteneLoader
 
             string base_path = Storage_Folder;
 
-            string custom_path = getCustomFolderPath(tookAt,userID);
+            string custom_path = getCustomFolderPath(tookAt, userID);
 
             string date = tookAt.Replace(":", "-").Substring(0, 19);
             string extension = ".*";
@@ -1231,7 +1286,7 @@ namespace MiteneLoader
         {
             string[] files = System.IO.Directory.GetFiles(
                     Storage_Folder, "*", System.IO.SearchOption.AllDirectories);
-            foreach (string file in files) 
+            foreach (string file in files)
             {
                 string new_file = Storage_Folder + "\\" + System.IO.Path.GetFileName(file);
                 if (!new_file.Equals(file))
@@ -1250,7 +1305,7 @@ namespace MiteneLoader
 
             string[] subFolders = System.IO.Directory.GetDirectories(
                         Storage_Folder, "*", System.IO.SearchOption.TopDirectoryOnly);
-            foreach (string subfolder in subFolders) 
+            foreach (string subfolder in subFolders)
             {
                 System.IO.Directory.Delete(subfolder, true); //根こそぎ削除
             }
@@ -1405,10 +1460,10 @@ namespace MiteneLoader
             miteneData.Clear();
             download_count = 0; // download_count は do_download でカウントする
             ReadData();
-                if (!DataReadComplete)
-                {
-                    nextPage();
-                }
+            if (!DataReadComplete)
+            {
+                nextPage();
+            }
         }
 
         private void setProgressText()
@@ -1924,6 +1979,13 @@ namespace MiteneLoader
         private void TxtDownload_Max_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var text = TxtDownload_Max.Text + e.Text;
+            e.Handled = number_regex.IsMatch(text);
+
+        }
+
+        private void txtTargetPeriod_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var text = txtTargetPeriod.Text + e.Text;
             e.Handled = number_regex.IsMatch(text);
 
         }
