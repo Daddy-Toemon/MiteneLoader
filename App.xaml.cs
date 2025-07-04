@@ -25,8 +25,8 @@ namespace MiteneLoader
             }
 
             // メインウィンドウ起動
-            var mainWindow = new MainWindow();
-            mainWindow.Show();
+            //var mainWindow = new MainWindow();
+            //mainWindow.Show();
         }
 
     }
